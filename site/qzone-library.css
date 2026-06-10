@@ -2,20 +2,215 @@
   box-sizing: border-box;
 }
 
+@font-face {
+  font-family: "Zpix";
+  src: url("https://cdn.jsdelivr.net/gh/SolidZORO/zpix-pixel-font/dist/Zpix.ttf") format("truetype");
+  font-display: swap;
+}
+
+:root {
+  --font-pixel: "Zpix", "SimSun", "宋体", monospace;
+  --font-kai: "LXGW ZhenKai GB", "Ma Shan Zheng", "KaiTi", "楷体", serif;
+
+  --aero-ink: #0b2f5c;
+  --aero-deep: #1257c4;
+  --aero-glow: rgba(55, 130, 240, .5);
+  --aero-edge: rgba(255, 255, 255, .85);
+  --aero-shadow: rgba(16, 64, 130, .2);
+  --gel: linear-gradient(180deg, rgba(255, 255, 255, .95) 0%, rgba(255, 255, 255, .5) 48%, rgba(210, 230, 250, .35) 52%, rgba(172, 206, 246, .55) 100%);
+  --gel-on: linear-gradient(180deg, rgba(255, 255, 255, .8) 0%, rgba(110, 175, 250, .94) 46%, rgba(45, 130, 235, .97) 54%, rgba(16, 90, 205, 1) 100%);
+  --gel-sh: inset 0 1px 0 #fff, inset 0 -6px 11px rgba(110, 160, 225, .26), 0 2px 5px var(--aero-shadow);
+  --gel-on-sh: inset 0 1px 0 rgba(255, 255, 255, .9), 0 2px 9px var(--aero-glow), 0 0 14px var(--aero-glow);
+}
+
 html,
 body {
   margin: 0;
   height: 100%;
-  /* font-family: "Noto Sans SC", sans-serif; */
-  font-family: "SimSun", "宋体", serif;
+}
 
-  background: #e9edf1;
+body {
+  font-family: var(--font-pixel);
+  /* pixel font is the default for all chrome/UI */
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  color: var(--aero-ink);
+  /* Frutiger-Aero sky behind the window well (matches /museum/) */
+  background:
+    radial-gradient(120% 80% at 50% 120%, rgba(150, 205, 255, .55), transparent 60%),
+    linear-gradient(180deg, #6fa8ee 0%, #9cc4f5 26%, #c8dcfb 58%, #e9f1fd 100%);
+  background-attachment: fixed;
+}
+
+/* dreamy floating bokeh behind everything */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(360px 360px at 12% 16%, rgba(255, 255, 255, .9), transparent 62%),
+    radial-gradient(300px 300px at 82% 8%, rgba(150, 200, 255, .72), transparent 60%),
+    radial-gradient(420px 420px at 70% 78%, rgba(150, 195, 255, .5), transparent 62%),
+    radial-gradient(260px 260px at 30% 88%, rgba(255, 255, 255, .7), transparent 60%);
+  filter: blur(6px);
+}
+
+/* ── shared museum header ───────────────────────────────────────────────── */
+.topbar {
+  position: relative;
+  z-index: 3;
+  flex: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .62) 0%, rgba(196, 220, 250, .5) 42%, rgba(206, 226, 250, .32) 100%);
+  backdrop-filter: blur(20px) saturate(1.45);
+  -webkit-backdrop-filter: blur(20px) saturate(1.45);
+  box-shadow: 0 10px 26px rgba(18, 70, 135, .14);
+}
+
+.topbar .gradient {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 11px 22px;
+}
+
+.brand h1 {
+  margin: 0;
+  font: 400 22px/1.2 var(--font-pixel);
+  letter-spacing: -.4px;
+  color: var(--aero-ink);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .85);
+}
+
+.brand h1::before {
+  content: "";
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  margin-right: 9px;
+  vertical-align: -4px;
+  background: url("favicon.png") center/contain no-repeat;
+  image-rendering: pixelated;
+}
+
+.topnav {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.topnav a,
+.topnav button {
+  font: 400 14px/1 var(--font-pixel);
+  letter-spacing: -.4px;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--aero-deep);
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--aero-edge);
+  background: var(--gel);
+  box-shadow: var(--gel-sh);
+  transition: transform .12s, box-shadow .15s, background .15s, color .15s;
+}
+
+#lang {
+  min-width: 40px;
+}
+
+.topnav a:hover,
+.topnav button:hover {
+  transform: translateY(-1px);
+  box-shadow: inset 0 1px 0 #fff, 0 4px 12px var(--aero-shadow), 0 0 0 2px rgba(110, 175, 250, .34);
+}
+
+.topnav a.on {
+  color: #fff;
+  border-color: rgba(255, 255, 255, .9);
+  background: var(--gel-on);
+  box-shadow: var(--gel-on-sh);
+  text-shadow: 0 1px 1px rgba(0, 40, 95, .4);
+}
+
+
+.viewer {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-height: 0;
+  padding: 16px 18px 18px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: auto;
+}
+
+.viewer-frame {
+  position: relative;
+  width: min(1280px, 100%);
+
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid var(--aero-edge);
+  background: rgba(255, 255, 255, .26);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .6),
+    0 18px 44px rgba(18, 70, 135, .28);
+}
+
+.viewer-bar {
+  flex: none;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 12px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .62), rgba(206, 226, 250, .34));
+  border-bottom: 1px solid rgba(255, 255, 255, .6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.viewer-tools {
+  flex-wrap: nowrap;
+}
+
+.viewer-loc {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 6px;
+  font: 400 13px/1 var(--font-pixel);
+  letter-spacing: -.3px;
+  color: var(--aero-deep);
+}
+
+.viewer-dot {
+  width: 10px;
+  height: 10px;
+  flex: none;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #c7e7ff, #3f8fe6);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .7), 0 1px 2px rgba(16, 64, 130, .4);
+}
+
+.viewer-tools {
+  display: flex;
+  gap: 6px;
 }
 
 #stageWrap {
-  position: fixed;
-  inset: 0;
+  position: relative;
+  flex: 0 1 auto;
+  min-height: 0;
   overflow: auto;
   background: #dde6ec;
 }
@@ -36,20 +231,15 @@ body.custom-cursor #stageWrap * {
   background: #dde6ec;
 }
 
-/* the page = a bounded 1280px frame on the tiled skin bg (no fake browser chrome).
-   The frame still bounds all decorations (overflow hidden) and casts a soft shadow. */
 .browser {
   position: relative;
   z-index: 2;
   width: 1280px;
   min-width: 1280px;
-  /* hard floor: the frame stays 1280 so the 1280px skin banner is true 1:1 size */
+  /* the 空间 is 1280 wide; the .viewer-frame window hugs this size (see .viewer-frame) */
   flex: none;
-  /* never let any future flex context shrink it */
-  /* real: 1280 banner window, 980 content centered inside it */
-  margin: 3rem auto;
+  margin: 0 auto;
   overflow: hidden;
-  box-shadow: 0 10px 40px rgba(20, 28, 40, 0.23);
   background: #fff;
 }
 
@@ -94,16 +284,12 @@ body.custom-cursor #stageWrap * {
 
 .who {
   position: relative;
-  /* z-index only takes effect on a POSITIONED element — without this the absolute
-     .page-header (a positioned sibling) always paints on top of the static text */
   z-index: 1;
-  /* above the banner image (auto/0), below the nav (z-index:2) */
-  margin-top: 5rem;
+  margin-top: 4rem;
   font-family: "ZCOOL KuaiLe", cursive;
   font-size: 28px;
   color: var(--c-nick, #fff);
-  /* page title takes the 配色 nickname color */
-  text-shadow: 0 2px 6px var(--c-tabbg, #5555553c);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, .5);
 }
 
 /* QZone v5 nav: a horizontal strip of square ~25px tabs sitting ON a baseline border
@@ -128,7 +314,7 @@ body.custom-cursor #stageWrap * {
   padding: 0;
   /* natural side gaps from the banner edges */
   flex-wrap: wrap;
-  font-family: "SimSun", "宋体", serif;
+  font-family: var(--font-pixel);
   /* border-bottom: 2px solid var(--c-tabborder, #8fbfe0); */
   /* the baseline the tabs rest on = content-top */
 }
@@ -201,7 +387,6 @@ body.custom-cursor #stageWrap * {
   background: rgba(255, 255, 255, .92);
   border: 1px solid var(--c-tabborder, #c7e5eb);
   /* v5: flat 1px border, square corners */
-  border-radius: 2px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, .14);
 }
@@ -214,6 +399,7 @@ body.custom-cursor #stageWrap * {
   color: var(--c-hdtext, #fff);
   /* module title follows the 配色 scheme */
   background: var(--c-hd, #7fa9c9);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, .3);
 }
 
 .mod-profile .bd {
@@ -224,7 +410,6 @@ body.custom-cursor #stageWrap * {
   display: none;
 }
 
-/* 🎲 generate button in a module header (说说) — edit-mode only */
 .hd-gen {
   float: right;
   margin-top: 7px;
@@ -248,6 +433,82 @@ body.view-only .hd-gen {
   display: none;
 }
 
+.hd-action {
+  float: right;
+  /* margin-top: 1px; */
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--c-hdtext, #fff);
+  opacity: .9;
+  text-decoration: underline;
+  /* underlined by default */
+  cursor: pointer;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, .25);
+}
+
+.hd-action:hover {
+  opacity: 1;
+  color: var(--c-hover, #ffe9a8);
+  /* hover takes the 配色 theme accent */
+}
+
+.rz-item {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 7px 14px;
+  border-bottom: 1px dashed #e6ebf0;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.rz-item:last-child {
+  border-bottom: 0;
+}
+
+.rz-item:hover {
+  background: rgba(80, 140, 220, .07);
+}
+
+.rz-cat {
+  flex: none;
+  font-size: 12px;
+  color: #9aa6b0;
+}
+
+.rz-t {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-kai);
+  font-size: 14px;
+  color: var(--c-link, #2a5a8a);
+}
+
+.rz-img {
+  flex: none;
+  font-size: 11px;
+  color: #c0392b;
+}
+
+.rz-c {
+  flex: none;
+  font-size: 11px;
+  color: #9aa6b0;
+}
+
+/* empty 相册 placeholder */
+.album-empty {
+  padding: 26px 14px;
+  text-align: center;
+  font-family: var(--font-kai);
+  font-size: 13px;
+  line-height: 1.9;
+  color: #9aa6b0;
+}
+
 /* generated 日志 — title · paragraph body · 阅读/评论/转载/分享 + date. Two posts share
    the box; the second is divided off with a top border. */
 .rizhi {
@@ -258,17 +519,66 @@ body.view-only .hd-gen {
   border-top: 1px solid #e6ebf0;
 }
 
+/* 最近访客 — vertical list of recovered classic QQ pixel avatars + 非主流 网名 + 来访时间.
+   Matches the real v5 好友秀/最近访客 module: bigger avatar on the left, name stacked beside it. */
+.visitors {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 11px 12px;
+}
+
+.visitor {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+}
+
+.visitor-av {
+  width: 54px;
+  height: 54px;
+  flex: none;
+  border: 1px solid var(--c-tabborder, #c7e5eb);
+  background: #fff;
+  image-rendering: pixelated;
+  /* keep the pixel avatars crisp */
+}
+
+.visitor-meta {
+  min-width: 0;
+  flex: 1;
+}
+
+.visitor-nick {
+  font-size: 13px;
+  color: var(--c-link, #2a5a8a);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.visitor-t {
+  font-size: 11px;
+  color: #9aa6b0;
+  margin-top: 2px;
+}
+
 .rizhi-title {
-  font-size: 15px;
+  font-family: var(--font-kai);
+  font-size: 20px;
   font-weight: 700;
   color: #2a5a8a;
-  margin-bottom: 6px;
+  margin-bottom: 7px;
 }
 
 .rizhi-p {
-  font-size: 13px;
+  font-family: var(--font-kai);
+  /* warm 楷 for the written content (the 日志 prose) */
+  font-size: 14px;
   color: #444;
-  line-height: 1.9;
+  line-height: 1.95;
   text-indent: 2em;
   margin: 0 0 6px;
 }
@@ -277,7 +587,7 @@ body.view-only .hd-gen {
   margin-top: 8px;
   padding-top: 6px;
   border-top: 1px dashed #e2e2e2;
-  font-size: 11px;
+  font-size: 13px;
   color: #9aa6b0;
 }
 
@@ -321,7 +631,7 @@ body.view-only .hd-gen {
 
 .qqshow-name {
   text-align: center;
-  font-family: "SimSun", "宋体", serif;
+  font-family: var(--font-pixel);
   font-size: 14px;
   font-weight: 700;
   color: #2a4d63;
@@ -373,7 +683,8 @@ body.view-only .hd-gen {
 
 #forkBanner {
   position: fixed;
-  top: 12px;
+  top: 66px;
+  /* below the museum header */
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -429,49 +740,33 @@ body:not(.view-only) .qqshow-name[contenteditable="true"] {
 /* QZone-style control strip (top-right), modeled on the real 显示导航|装扮空间|自定义 bar:
    a beveled gray bar of small 宋体 buttons separated by hairlines. Slides left so it
    sits just beside the market panel when it's open. */
-.toolbar {
-  position: fixed;
-  top: 14px;
-  right: 14px;
-  z-index: 46;
-  display: flex;
-  gap: 0;
-  padding: 3px;
-  background: linear-gradient(#fcfcfd, #d9dce0);
-  border: 1px solid #b4b8bd;
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
-  font-family: "SimSun", "宋体", serif;
-}
-
-.toolbar button {
-  border: 0;
-  border-left: 1px solid #c6c9ce;
+/* glossy gel button (in the window title-bar) */
+.viewer-tools button {
   cursor: pointer;
-  background: transparent;
-  color: #3a3f47;
-  padding: 4px 13px;
+  color: var(--aero-deep);
+  border: 1px solid var(--aero-edge);
+  border-radius: 8px;
+  background: var(--gel);
+  box-shadow: var(--gel-sh);
+  padding: 5px 13px;
   font-size: 12px;
-  font-family: inherit;
+  font-family: var(--font-pixel);
+  transition: transform .12s, box-shadow .15s, background .15s, color .15s;
 }
 
-.toolbar button:first-child {
-  border-left: 0;
+.viewer-tools button:hover {
+  transform: translateY(-1px);
+  box-shadow: inset 0 1px 0 #fff, 0 4px 12px var(--aero-shadow), 0 0 0 2px rgba(110, 175, 250, .34);
 }
 
-.toolbar button:hover {
-  background: rgba(255, 255, 255, .75);
-  color: #0a7a2f;
-}
-
-/* active state for an open market / the 自定义 toggle — the white "pressed" tab look */
-.toolbar button.on,
-.toolbar button.primary {
-  background: #fff;
-  color: #1559cf;
-  font-weight: 700;
-  box-shadow: inset 0 0 0 1px #b9c7e6;
-  border-radius: 2px;
+/* active state for an open market — glowing aqua gel (NOT used for 编辑 anymore) */
+.viewer-tools button.on,
+.viewer-tools button.primary {
+  color: #fff;
+  border-color: rgba(255, 255, 255, .9);
+  background: var(--gel-on);
+  box-shadow: var(--gel-on-sh);
+  text-shadow: 0 1px 1px rgba(0, 40, 95, .4);
 }
 
 /* preview (view-only): clean toolbar — keep only 编辑 (to exit preview) + 分享.
@@ -484,8 +779,13 @@ body.view-only #clearBtn {
 
 #marketToggle::before {
   content: "\25B8\00A0";
-  /* ▸ marker like the real bar */
-  color: #8a8f96;
+  /* ▸ when closed; flips to ▾ when open (the panel is "down") */
+  color: currentColor;
+}
+
+#marketToggle.on::before {
+  content: "\25BE\00A0";
+  /* ▾ */
 }
 
 /* the buttons always stay visible (edit OR preview) — only the per-item delete/drag
@@ -705,20 +1005,26 @@ body.view-only .music-pop {
 /* the 素材库 (精品装饰) drops down BELOW the top bar, like the real QZone edit panel */
 .market {
   position: fixed;
-  top: 52px;
-  right: 14px;
+  /* fixed → escapes the window's overflow:hidden so it floats as a real dropdown;
+     JS positions top/right under the 装扮空间 button (see setMarket) */
+  top: 100px;
+  right: 18px;
   width: 440px;
-  max-height: calc(100vh - 70px);
-  z-index: 44;
+  max-width: calc(100vw - 24px);
+  max-height: 78vh;
+  z-index: 80;
   display: flex;
   flex-direction: column;
-  background: #eef0f3;
-  border: 1px solid #b4b8bd;
-  border-radius: 4px;
-  box-shadow: 0 12px 32px rgba(30, 40, 60, .32);
+  /* frosted Frutiger-Aero glass panel */
+  background: linear-gradient(180deg, rgba(244, 249, 255, .82) 0%, rgba(224, 238, 255, .78) 100%);
+  backdrop-filter: blur(22px) saturate(1.5);
+  -webkit-backdrop-filter: blur(22px) saturate(1.5);
+  border: 1px solid var(--aero-edge);
+  border-radius: 14px;
+  box-shadow: 0 18px 40px rgba(18, 70, 135, .3), inset 0 1px 0 rgba(255, 255, 255, .8);
   overflow: hidden;
-  font-family: "SimSun", "宋体", serif;
-  /* match the QZone top-bar chrome */
+  color: var(--aero-ink);
+  font-family: var(--font-pixel);
   transform-origin: top right;
   transition: opacity .16s ease, transform .16s ease;
 }
@@ -733,16 +1039,18 @@ body.view-only .music-pop {
 .qqshow-edit {
   margin: 10px 12px 8px;
   padding: 10px 12px;
-  background: #e7ecf3;
-  border: 1px solid #c3ccd8;
-  border-radius: 4px;
+  /* inset glass sub-panel */
+  background: rgba(255, 255, 255, .42);
+  border: 1px solid rgba(255, 255, 255, .7);
+  border-radius: 10px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8), inset 0 -2px 6px rgba(110, 160, 225, .14);
 }
 
 .qqshow-edit label {
   display: block;
   font-size: 12px;
   font-weight: 700;
-  color: #2a4a6a;
+  color: var(--aero-ink);
   margin-bottom: 6px;
 }
 
@@ -751,43 +1059,67 @@ body.view-only .music-pop {
   gap: 6px;
 }
 
-.qqshow-edit input {
+.qqshow-edit input,
+.search input {
   flex: 1;
   min-width: 0;
-  border: 1px solid #cdd2e6;
-  border-radius: 7px;
-  padding: 7px 10px;
-  background: #fff;
-  color: #333;
+  width: 100%;
+  border: 1px solid var(--aero-edge);
+  border-radius: 8px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, .6);
+  box-shadow: inset 0 2px 5px rgba(60, 120, 175, .22), inset 0 1px 0 rgba(255, 255, 255, .7);
+  color: var(--aero-ink);
   font-size: 12.5px;
   outline: none;
+  transition: box-shadow .15s, background .15s;
 }
 
-.qqshow-edit input:focus {
-  border-color: #1559cf;
+.qqshow-edit input::placeholder,
+.search input::placeholder {
+  color: #88a6c8;
 }
 
-.qqshow-edit button {
+.qqshow-edit input:focus,
+.search input:focus {
+  background: rgba(255, 255, 255, .9);
+  box-shadow: inset 0 2px 5px rgba(60, 120, 175, .15), 0 0 0 3px rgba(60, 140, 240, .3);
+}
+
+.qqshow-edit button,
+.tabs button {
   cursor: pointer;
-  border: 1px solid #9fb0c8;
-  background: linear-gradient(#fbfdff, #dbe6f5);
-  color: #1559cf;
+  border: 1px solid var(--aero-edge);
+  border-radius: 8px;
+  background: var(--gel);
+  box-shadow: var(--gel-sh);
+  color: var(--aero-deep);
   font-weight: 700;
-  font-family: "SimSun", "宋体", serif;
+  font-family: var(--font-pixel);
   font-size: 12.5px;
-  padding: 0 12px;
-  border-radius: 3px;
+  padding: 6px 12px;
+  transition: transform .12s, box-shadow .15s, background .15s, color .15s;
 }
 
-.qqshow-edit button:hover {
-  background: linear-gradient(#fff, #cfe0f5);
+.qqshow-edit button:hover,
+.tabs button:hover {
+  transform: translateY(-1px);
+  box-shadow: inset 0 1px 0 #fff, 0 4px 12px var(--aero-shadow), 0 0 0 2px rgba(110, 175, 250, .34);
+}
+
+.tabs button.on {
+  color: #fff;
+  border-color: rgba(255, 255, 255, .9);
+  background: var(--gel-on);
+  box-shadow: var(--gel-on-sh);
+  text-shadow: 0 1px 1px rgba(0, 40, 95, .4);
 }
 
 .qqshow-edit .qqshow-make {
   display: inline-block;
   margin-top: 7px;
   font-size: 11px;
-  color: #4a72a6;
+  color: var(--aero-deep);
   text-decoration: none;
 }
 
@@ -796,68 +1128,34 @@ body.view-only .music-pop {
 }
 
 .market h1 {
-  font-family: "SimSun", "宋体", serif;
+  font-family: var(--font-pixel);
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 400;
   margin: 0;
-  padding: 8px 14px;
-  color: #2a4a6a;
-  background: linear-gradient(#fcfcfd, #d9dce0);
-  border-bottom: 1px solid #b4b8bd;
+  padding: 11px 16px 9px;
+  color: var(--aero-ink);
+  letter-spacing: -.4px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .8);
+  /* seamless frosted deck header — soft glow, no hard line */
+  background: linear-gradient(180deg, rgba(255, 255, 255, .5) 0%, rgba(206, 226, 250, .28) 100%);
+  box-shadow: 0 6px 16px rgba(18, 70, 135, .1);
 }
 
 .tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
-  padding: 6px 12px;
-}
-
-.tabs button {
-  cursor: pointer;
-  background: linear-gradient(#fcfcfd, #e2e5ea);
-  border: 1px solid #b9c0c9;
-  color: #3a3f47;
-  padding: 4px 11px;
-  border-radius: 2px;
-  font-family: "SimSun", "宋体", serif;
-  font-size: 12.5px;
-}
-
-.tabs button:hover {
-  color: #0a7a2f;
-}
-
-.tabs button.on {
-  background: #fff;
-  color: #1559cf;
-  font-weight: 700;
-  box-shadow: inset 0 0 0 1px #b9c7e6;
+  gap: 6px;
+  padding: 8px 12px;
 }
 
 .search {
   margin: 4px 14px 6px;
 }
 
-.search input {
-  width: 100%;
-  border: 1px solid #dde1ea;
-  border-radius: 8px;
-  padding: 9px 12px;
-  background: #fff;
-  color: #333;
-  font-size: 13px;
-  outline: none;
-}
-
-.search input:focus {
-  border-color: #1559cf;
-}
-
 .count {
   padding: 0 16px 6px;
   font-size: 11px;
-  color: #8a93a5;
+  color: var(--muted, #5876a4);
 }
 
 .grid {
@@ -1073,10 +1371,10 @@ body.view-only .music-pop {
    via JS zoom). The market becomes a full-screen sheet so it's usable on a phone. ── */
 @media (max-width: 640px) {
   .market {
-    top: 0;
-    right: 0;
-    bottom: 0;
+    position: fixed;
+    inset: 0;
     width: 100vw;
+    max-width: none;
     max-height: 100vh;
     border-radius: 0;
     border: 0;
@@ -1086,8 +1384,12 @@ body.view-only .music-pop {
     transform: translateY(-100%);
   }
 
-  .toolbar {
-    top: 8px;
-    right: 8px;
+  .viewer {
+    padding: 8px;
+  }
+
+  .viewer-bar {
+    flex-wrap: wrap;
+    gap: 8px;
   }
 }

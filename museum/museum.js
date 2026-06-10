@@ -6,22 +6,24 @@ const META = (window.META || []);
 let lang = localStorage.getItem('lang') || 'zh';
 const I18N = {
   zh: {
-    brand: 'QQ空间装扮博物馆', sub: n => `2005–2009 · 共 ${n} 件藏品`,
+    brand: 'QQ空间博物馆', sub: n => `2005–2009 · 共 ${n} 件藏品`,
     search: '按名称或编号搜索…', all: '全部', color: '色', byDate: '按年代', shuffle: '乱序',
     animOnly: '仅动图', empty: '没有匹配的藏品', langBtn: 'EN',
     f_type: '类型', f_color: '色系', f_year: '年代', f_search: '搜索',
     d_era: '年代', d_color: '色系', d_size: '尺寸', d_price: '原价', d_animated: '动画',
-    d_tags: '标签', d_yes: '是', price: p => `${p} 黄钻`, viewSrc: '查看原始素材 ↗',
-    copyId: '复制编号', copied: '已复制 ✓', untitled: '（无名）'
+    d_tags: '标签', d_yes: '是', price: p => `${p} <img class="hz" src="assets/huangzuan_plain.png" alt="黄钻">`, viewSrc: '查看原始素材 ↗',
+    copyId: '复制编号', copied: '已复制 ✓', untitled: '（无名）',
+    nav_archive: '藏品', nav_qzone: 'QQ空间', nav_about: '关于'
   },
   en: {
-    brand: 'QZone Decoration Museum', sub: n => `2005–2009 · ${n} items`,
+    brand: 'QZone Museum', sub: n => `2005–2009 · ${n} items`,
     search: 'Search by name or ID…', all: 'All', color: 'Color', byDate: 'By date', shuffle: 'Shuffle',
     animOnly: 'Animated', empty: 'No items match these filters', langBtn: '中',
     f_type: 'Type', f_color: 'Color', f_year: 'Year', f_search: 'Search',
     d_era: 'Era', d_color: 'Color', d_size: 'Size', d_price: 'Price', d_animated: 'Animated',
-    d_tags: 'Tags', d_yes: 'Yes', price: p => `${p} ★`, viewSrc: 'View original ↗',
-    copyId: 'Copy ID', copied: 'Copied ✓', untitled: '(untitled)'
+    d_tags: 'Tags', d_yes: 'Yes', price: p => `${p} <img class="hz" src="assets/huangzuan_plain.png" alt="Yellow Diamond">`, viewSrc: 'View original ↗',
+    copyId: 'Copy ID', copied: 'Copied ✓', untitled: '(untitled)',
+    nav_archive: 'Archive', nav_qzone: 'QZone', nav_about: 'About'
   },
 };
 const L = () => I18N[lang];
@@ -29,8 +31,8 @@ const L = () => I18N[lang];
 const setTxt = (id, t) => { const e = document.getElementById(id); if (e) e.textContent = t; };
 
 const TYPE_LABEL = { // [zh, en]
-  skin: ['皮肤', 'Skins'], pendant: ['挂件', 'Pendants'], floaty: ['漂浮物', 'Floaties'],
-  cursor: ['鼠标', 'Cursors'], titlebar: ['标题栏', 'Title bars'], player: ['播放器', 'Music Players'],
+  skin: ['皮肤', 'Skins'], pendant: ['挂件', 'Pendants'], floaty: ['漂浮', 'Floaties'],
+  cursor: ['鼠标', 'Cursors'], titlebar: ['标题', 'Title bars'], player: ['播放器', 'Music Players'],
   swf: ['Flash', 'Flash'],
 };
 const TYPE_ORDER = ['skin', 'pendant', 'floaty', 'cursor', 'titlebar', 'player', 'swf'];
@@ -186,19 +188,22 @@ function openDetail(r) {
   document.getElementById('d-sub').textContent =
     `#${r.id} · ${tType(r.type)}` + (r.date ? ` · ${r.date.slice(0, 10)}` : '');
   const dl = document.getElementById('d-dl'); dl.innerHTML = '';
-  const row = (k, v) => {
-    if (!v) return; const dt = document.createElement('dt'); dt.textContent = k;
-    const dd = document.createElement('dd'); dd.innerHTML = v; dl.appendChild(dt); dl.appendChild(dd);
+  // recessed glass field-card: label on top, value in an inset box
+  const row = (k, v, wide) => {
+    if (!v) return;
+    const f = document.createElement('div'); f.className = 'field' + (wide ? ' wide' : '');
+    f.innerHTML = `<span class="fl">${k}</span><span class="fv">${v}</span>`;
+    dl.appendChild(f);
   };
   row(L().d_era, r.era);
-  if (r.hues && r.hues.length) row(L().d_color, `<span class="huelist">` + r.hues.map(h =>
-    `<span class="huechip"><span class="dot" style="background:${HUE[h] ? HUE[h][0] : r.color}"></span>${tHue(h)}</span>`
-  ).join('') + `</span>`);
   if (r.w) row(L().d_size, `${r.w}×${r.h}`);
   if (r.price) row(L().d_price, L().price(r.price));
   if (r.animated) row(L().d_animated, L().d_yes);
+  if (r.hues && r.hues.length) row(L().d_color, `<span class="huelist">` + r.hues.map(h =>
+    `<span class="huechip"><span class="dot" style="background:${HUE[h] ? HUE[h][0] : r.color}"></span>${tHue(h)}</span>`
+  ).join('') + `</span>`, true);
   const tags = [...new Set([].concat(r.themes || [], r.mood || [], r.tone || [], r.audience || [], r.cats || []))].filter(Boolean);
-  if (tags.length) row(L().d_tags, `<div class="pills">${tags.map(t => `<span class="pill">${tTag(t)}</span>`).join('')}</div>`);
+  if (tags.length) row(L().d_tags, `<div class="pills">${tags.map(t => `<span class="pill">${tTag(t)}</span>`).join('')}</div>`, true);
   const src = document.getElementById('d-src'); src.href = r.src || '#'; src.textContent = L().viewSrc;
   const copy = document.getElementById('d-copy'); copy.textContent = L().copyId;
   copy.onclick = () => {
@@ -221,6 +226,9 @@ function applyLang() {
   const qEl = document.getElementById('q'); if (qEl) qEl.placeholder = L().search;
   setTxt('lang', L().langBtn);
   setTxt('animLbl', L().animOnly);
+  setTxt('nav-archive', L().nav_archive);
+  setTxt('nav-qzone', L().nav_qzone);
+  setTxt('nav-about', L().nav_about);
   document.querySelectorAll('.sort button[data-sort]').forEach(b => {
     b.textContent = b.dataset.sort === 'date' ? L().byDate : L().shuffle;
   });

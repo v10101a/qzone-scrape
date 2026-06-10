@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>关于QQ空间博物馆</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="museum.css">
+</head>
+
+<body class="lang-zh">
+  <header class="topbar">
+    <div class="gradient">
+      <div class="brand">
+        <h1><a id="brand-link" href="index.html" style="text-decoration:none;color:inherit">QQ空间博物馆</a></h1>
+      </div>
+      <nav class="topnav">
+        <a href="index.html" id="nav-archive">藏品</a>
+        <a href="../site/" id="nav-qzone">QQ空间</a>
+        <a href="about.html" id="nav-about" class="on">关于</a>
+        <button id="lang">EN</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="about-wrap">
+    <div class="about-card">
+      <h2><span class="zh">关于</span><span class="en">About</span></h2>
+      <p class="lead zh">
+        这是一座关于 <strong>QQ空间装扮</strong> 的博物馆，收藏 2005 至 2009 年间的皮肤、挂件、
+        漂浮物、鼠标、标题栏与音乐播放器，共 5,863 件。
+      </p>
+      <p class="lead en">
+        A museum of <strong> QZone decorations</strong>, collecting the skins, pendants, floaties, cursors, title bars
+        and music players that Chinese teenagers used to dress up their homepages between 2005 and 2009, with a totle of
+        5,863 files.
+      </p>
+
+      <!-- <div class="about-stats">
+        <span class="lab"><span class="zh">藏品</span><span class="en">Items</span></span>
+      </div>
+      <div class="stat"><span class="num">2005–09</span><span class="lab"><span class="zh">年代</span><span
+            class="en">Era</span></span></div>
+    </div> -->
+
+      <h2><span class="zh">致谢</span><span class="en">With thanks to</span></h2>
+      <ul>
+        <li>
+          <a href="https://web.archive.org/" target="_blank" rel="noopener">Internet Archive</a>
+        </li>
+        <li>
+          <a href="https://skins.webamp.org/" target="_blank" rel="noopener">Winamp Skin Museum</a>,
+          <a href="https://banner-depot-2000.net/" target="_blank" rel="noopener">BannerDepot 2000</a>,
+          <a href="https://qqshow2000.com/" target="_blank" rel="noopener">qqshow2000</a>
+        </li>
+        <li>
+          <a href="https://github.com/SolidZORO/zpix-pixel-font" target="_blank" rel="noopener">Zpix 最像素</a>
+        </li>
+        <li>
+          <span class="zh">腾讯</span>
+          <span class="en">Tencent</span>
+        </li>
+      </ul>
+
+      <h2><span class="zh">去逛逛</span><span class="en">Wander in</span></h2>
+      <p class="about-go">
+        <a class="go" href="index.html"><span class="zh">← 浏览藏品</span><span class="en">← Browse the archive</span></a>
+        <a class="go" href="../site/"><span class="zh">装扮你的空间 →</span><span class="en">Dress up a space →</span></a>
+      </p>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      var lang = localStorage.getItem('lang') || 'zh';
+      var NAV = {
+        zh: { brand: 'QQ空间博物馆', archive: '藏品', qzone: 'QQ空间', about: '关于', lang: 'EN' },
+        en: { brand: 'QZone Museum', archive: 'Archive', qzone: 'QZone', about: 'About', lang: '中' }
+      };
+      function apply() {
+        document.body.className = 'lang-' + lang;
+        document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+        var n = NAV[lang];
+        document.getElementById('brand-link').textContent = n.brand;
+        document.getElementById('nav-archive').textContent = n.archive;
+        document.getElementById('nav-qzone').textContent = n.qzone;
+        document.getElementById('nav-about').textContent = n.about;
+        document.getElementById('lang').textContent = n.lang;
+      }
+      document.getElementById('lang').onclick = function () {
+        lang = lang === 'zh' ? 'en' : 'zh';
+        localStorage.setItem('lang', lang);
+        apply();
+      };
+      apply();
+    })();
+  </script>
+</body>
+
+</html>

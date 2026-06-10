@@ -4,35 +4,50 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>QQ空间装扮博物馆 · QZone Decoration Museum</title>
+  <title>QQ空间博物馆</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="museum.css">
 </head>
 
 <body>
   <header class="topbar">
-    <div class="brand">
-      <h1 id="brand">QQ空间装扮博物馆</h1>
-    </div>
-    <div class="search">
-      <input id="q" type="search" placeholder="按名称或编号搜索…" autocomplete="off">
-      <button id="random" title="随机 / surprise me">🎲</button>
-      <button id="lang">EN</button>
-    </div>
-  </header>
-
-  <nav class="filters">
-    <div class="facet types" id="f-type"></div>
-    <div class="facet-row">
-      <div class="facet hues" id="f-hue"></div>
-      <div class="facet years" id="f-year"></div>
-      <div class="facet sort">
-        <button data-sort="date" class="on">按年代</button>
-        <button data-sort="rnd">乱序</button>
-        <label class="anim"><input type="checkbox" id="animOnly"> <span id="animLbl">仅动图</span></label>
+    <div class="gradient">
+      <div class="brand">
+        <h1 id="brand">QQ空间博物馆</h1>
       </div>
+      <nav class="topnav">
+        <a href="index.html" id="nav-archive" class="on">Archive</a>
+        <a href="../site/" id="nav-qzone">QZone</a>
+        <a href="about.html" id="nav-about">About</a>
+        <button id="lang">EN</button>
+      </nav>
     </div>
-    <div class="active-bar" id="active"></div>
-  </nav>
+    <nav class="filters">
+      <div class="toolrow">
+        <div class="facet types" id="f-type"></div>
+        <div class="search">
+          <input id="q" type="search" placeholder="按名称或编号搜索…" autocomplete="off">
+          <button id="random" title="随机 / surprise me">🎲</button>
+        </div>
+      </div>
+      <div class="facet-row">
+        <div class="facet hues" id="f-hue"></div>
+        <div class="facet years" id="f-year"></div>
+        <div class="facet sort">
+          <button data-sort="date" class="on">按年代</button>
+          <button data-sort="rnd">乱序</button>
+          <label class="anim"><input type="checkbox" id="animOnly"> <span id="animLbl">仅动图</span></label>
+        </div>
+      </div>
+      <div class="active-bar" id="active"></div>
+    </nav>
+  </header>
 
   <main id="grid" class="grid"></main>
   <div id="sentinel"></div>
@@ -47,7 +62,7 @@
       <div class="detail-meta">
         <h2 id="d-name"></h2>
         <p id="d-sub" class="d-sub"></p>
-        <dl id="d-dl"></dl>
+        <div id="d-dl" class="fields"></div>
         <div class="d-actions">
           <a id="d-src" target="_blank" rel="noopener">查看原始素材 ↗</a>
           <button id="d-copy">复制编号</button>

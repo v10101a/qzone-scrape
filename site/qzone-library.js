@@ -21,6 +21,43 @@ function refreshSelection() {   // mark currently-rendered cells of the active t
 
 const SHARED_HASH = location.hash.startsWith('#s=') ? location.hash.slice(3) : '';
 
+let lang = 'zh'; try { lang = localStorage.getItem('lang') || 'zh'; } catch (e) { }
+const T = {
+  zh: {
+    brand: 'QQ空间博物馆', navArchive: '藏品', navQzone: 'QQ空间', navAbout: '关于', langBtn: 'EN',
+    market: '装扮空间', random: '随机', clear: '清空', preview: '预览', edit: '编辑', share: '分享',
+    profile: '个人资料', visitors: '最近访客', diary: '最新日志', album: '相册',
+    writeDiary: '写日记', upload: '上传照片', albumEmpty: '相册还空着～',
+    navHome: '主页', navLog: '日志', navAlbum: '相册', navMusic: '音乐', navBoard: '留言板', navProfile: '个人档',
+    qqshowLabel: '我的 QQ 秀', qqshowPh: '粘贴 qqshow2000.com 链接或 id…', searchPh: '按编号或 id 搜索…',
+    create: '去 qqshow2000 创建 → ', nick: '我',
+    space: n => `${n}的空间`, title: n => `${n}的 QQ 空间`,
+    tabs: { skin: '皮肤', color: '配色', titlebar: '标题', pendant: '挂件', floaty: '漂浮', cursor: '鼠标', player: '音乐' }
+  },
+  en: {
+    brand: 'QZone Museum', navArchive: 'Archive', navQzone: 'QZone', navAbout: 'About', langBtn: '中',
+    market: 'Decorate', random: 'Random', clear: 'Clear', preview: 'Preview', edit: 'Edit', share: 'Share',
+    profile: 'Profile', visitors: 'Recent Visitors', diary: 'Latest Diary', album: 'Album',
+    writeDiary: 'Write »', upload: 'Upload »', albumEmpty: 'No photos yet～',
+    navHome: 'Home', navLog: 'Diary', navAlbum: 'Album', navMusic: 'Music', navBoard: 'Board', navProfile: 'Profile',
+    qqshowLabel: 'My QQ Show', qqshowPh: 'Paste a qqshow2000.com link or id…', searchPh: 'Search by # or id…',
+    create: 'Create one on qqshow2000 → ', nick: 'Me',
+    space: n => `${n}'s Space`, title: n => `${n}'s QZone`,
+    tabs: { skin: 'Skin', color: 'Color', titlebar: 'Banner', pendant: 'Pendant', floaty: 'Floaty', cursor: 'Cursor', player: 'Music' }
+  },
+};
+const TT = () => T[lang];
+function applyLang() {
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+  const t = TT();
+  document.querySelectorAll('[data-i18n]').forEach(e => { const v = t[e.dataset.i18n]; if (v != null) e.textContent = v; });
+  document.querySelectorAll('[data-i18n-ph]').forEach(e => { const v = t[e.dataset.i18nPh]; if (v != null) e.placeholder = v; });
+  const lb = $('#lang'); if (lb) lb.textContent = t.langBtn;
+  const eb = $('#editBtn'); if (eb) eb.textContent = editMode ? t.preview : t.edit;
+  if (typeof applyTitle === 'function') applyTitle();
+  if (typeof renderTabs === 'function') renderTabs();
+}
+
 // embedded qqshow2000.com
 
 const QQSHOW_API = 'https://iuthwndljsjdwhzlxopz.supabase.co/rest/v1/shares';
@@ -81,7 +118,13 @@ async function randomizeQQShow() {
 
 // nick name
 let rawName = '我';
-function applyTitle() { const t = $('#pageTitle'); if (t) t.textContent = ((rawName || '').trim() || '我') + '的 QQ 空间'; }
+function applyTitle() {
+  const tt = TT();
+  const raw = (rawName || '').trim();
+  const nm = (!raw || raw === '我') ? tt.nick : raw;   // untouched default → localized "Me/我"
+  const t = $('#pageTitle'); if (t) t.textContent = tt.title(nm);
+  const loc = $('#viewerLoc'); if (loc) loc.textContent = tt.space(nm);   // window title-bar breadcrumb
+}
 function setName(name, persist) {
   rawName = (name || '').trim();
   const pn = $('#profileName'); if (pn && document.activeElement !== pn) pn.textContent = rawName;
@@ -103,9 +146,9 @@ function setName(name, persist) {
 const P = {
   skin: { label: '皮肤', kind: 'skin' },
   color: { label: '配色', kind: 'color' },
-  titlebar: { label: '标题栏', kind: 'titlebar', path: id => { const it = L.titlebar.find(x => x.id == id); return `../library/titlebar/${id}.${it ? it.ext : 'gif'}`; } },
+  titlebar: { label: '标题', kind: 'titlebar', path: id => { const it = L.titlebar.find(x => x.id == id); return `../library/titlebar/${id}.${it ? it.ext : 'gif'}`; } },
   pendant: { label: '挂件', kind: 'pendant', path: id => `../library/pendant/${id}.gif` },
-  floaty: { label: '漂浮物', kind: 'floaty' },                       // items = {id, n(frames)}
+  floaty: { label: '漂浮', kind: 'floaty' },                       // items = {id, n(frames)}
   cursor: { label: '鼠标', kind: 'cursor', path: id => `../library/cursor_anim/${id}.png` },
   player: { label: '音乐', kind: 'player', path: id => `../library/player/${id}.swf` },
 };
@@ -114,8 +157,12 @@ if ('serviceWorker' in navigator && location.protocol.startsWith('http'))
   navigator.serviceWorker.register('sw.js').catch(() => { });
 
 
-$('#tabs').innerHTML = Object.entries(P).map(([k, v]) =>
-  `<button data-t="${k}" class="${k === tab ? 'on' : ''}">${v.label}</button>`).join('');
+function renderTabs() {
+  const t = TT();
+  $('#tabs').innerHTML = Object.entries(P).map(([k, v]) =>
+    `<button data-t="${k}" class="${k === tab ? 'on' : ''}">${(t.tabs && t.tabs[k]) || v.label}</button>`).join('');
+}
+renderTabs();
 $('#tabs').onclick = e => {
   const b = e.target.closest('button'); if (!b) return; tab = b.dataset.t;
   document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('on', x.dataset.t === tab)); render();
@@ -376,7 +423,15 @@ document.addEventListener('pointermove', e => {
 
 
 function setMarket(open) {
-  $('#market').classList.toggle('collapsed', !open);
+  const m = $('#market');
+  if (open) {   // drop from the bar, pinned to the 我的空间 WINDOW's right edge (floating)
+    const r = $('#marketToggle').getBoundingClientRect();
+    const frame = $('.viewer-frame'); const fr = frame ? frame.getBoundingClientRect() : { right: window.innerWidth - 8 };
+    m.style.top = (r.bottom + 6) + 'px';
+    m.style.right = Math.max(8, window.innerWidth - fr.right + 8) + 'px';
+    m.style.maxHeight = (window.innerHeight - r.bottom - 22) + 'px';
+  }
+  m.classList.toggle('collapsed', !open);
   $('#marketToggle').classList.toggle('on', open);       // 装扮空间 looks "pressed" while open
 }
 $('#marketToggle').onclick = () => {
@@ -390,9 +445,13 @@ function setEditMode(on) {
   editMode = on;
   document.body.classList.toggle('view-only', !on);
   const pn = $('#profileName'); if (pn) pn.contentEditable = on;   // name editable only while editing
-  $('#editBtn').textContent = on ? '预览' : '编辑';   // single always-visible toggle
-  $('#editBtn').classList.toggle('primary', !on);
-  if (!on) setMarket(false);
+  $('#editBtn').textContent = on ? TT().preview : TT().edit;   // single always-visible toggle
+  // (no active/.primary highlight — 编辑 is just a normal action, not a "pressed" state)
+  if (on) {
+    // editing a shared space = remixing it → drop the "browsing" banner and the shared hash
+    const fb = $('#forkBanner'); if (fb) fb.remove();
+    if (location.hash) history.replaceState(null, '', location.pathname);
+  } else setMarket(false);
 }
 $('#editBtn').onclick = () => setEditMode(!editMode);
 setMarket(false);   // panel starts closed; open it via 装扮空间
@@ -405,6 +464,7 @@ function clearAll() {
   document.body.classList.remove('custom-cursor'); $('#stageWrap').style.cursor = 'auto'; const f = $('#followCursor'); if (f) f.remove();
   stopMusic();
   rizhiList = []; renderRizhi();
+  visitors = []; renderVisitors();
   SEL.skin = SEL.color = SEL.titlebar = SEL.cursor = SEL.floaty = SEL.player = '';
   SEL.pendant.clear(); render();
 }
@@ -416,7 +476,8 @@ $('#randomBtn').onclick = () => {
   apply('cursor', idOf(r(L.cursor)));                // random cursor too
   for (let i = 0; i < 3; i++) addDeco(idOf(r(L.pendant)), { hang: true });
   startSnow(r(L.floaty));
-  genRizhiNew();                                      // roll one 日志 so the page feels lived-in
+  genRizhiNew();                                      // roll one 日志 (fresh seed) so the page feels lived-in
+  genVisitors();                                      // and a row of recent visitors (fresh seed)
   render();   // re-render so the market shows (pinned + checkmarked) what was just placed
 };
 
@@ -518,7 +579,16 @@ function setMusic(raw, st, onOk) {
 const esc = s => (s || '').replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 const MK_ORDER = 3;
 let rizhiList = [], MK = null;
-const ri = n => Math.floor(Math.random() * n);
+// ── seeded RNG so generated content (日志 + 访客) is reproducible from a tiny seed in the
+// share link, instead of embedding all the text. mulberry32 = small deterministic PRNG. ──
+function mulberry32(a) {
+  return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+}
+let RND = Math.random;                                  // swapped to a seeded fn during generation
+const newSeed = () => (Math.random() * 0xffffffff) >>> 0;
+function withSeed(seed, fn) { const prev = RND; RND = mulberry32(seed >>> 0); try { fn(); } finally { RND = prev; } }
+let rzSeed = 0, vsSeed = 0;
+const ri = n => Math.floor(RND() * n);
 function buildMarkov(order) {
   const lines = (window.SHUOSHUO && window.SHUOSHUO.lines) || [];
   const text = lines.join('。') + '。', map = new Map();
@@ -531,11 +601,11 @@ function buildMarkov(order) {
 function markovPara(maxc) {
   if (!MK) MK = buildMarkov(MK_ORDER);
   const { map, order, starts } = MK; if (!starts.length) return '';
-  let out = starts[Math.floor(Math.random() * starts.length)].slice(0, order);
+  let out = starts[Math.floor(RND() * starts.length)].slice(0, order);
   while (out.length < maxc) {
     const nx = map.get(out.slice(-order)); if (!nx) break;
-    const c = nx[Math.floor(Math.random() * nx.length)]; out += c;
-    if ('。！？'.includes(c) && out.length > maxc * 0.6 && Math.random() < 0.5) break;
+    const c = nx[Math.floor(RND() * nx.length)]; out += c;
+    if ('。！？'.includes(c) && out.length > maxc * 0.6 && RND() < 0.5) break;
   }
   if (!'。！？…'.includes(out[out.length - 1])) out += '。';
   return sanitize(out);
@@ -549,8 +619,8 @@ function sanitize(s) {
 }
 function rzDate() {
   const p = n => String(n).padStart(2, '0');
-  const y = 2009 + Math.floor(Math.random() * 5), mo = 1 + Math.floor(Math.random() * 12), d = 1 + Math.floor(Math.random() * 28);
-  return `${y}年${p(mo)}月${p(d)}日 ${p(Math.floor(Math.random() * 24))}时${p(Math.floor(Math.random() * 60))}分`;
+  const y = 2009 + Math.floor(RND() * 5), mo = 1 + Math.floor(RND() * 12), d = 1 + Math.floor(RND() * 28);
+  return `${y}年${p(mo)}月${p(d)}日 ${p(Math.floor(RND() * 24))}时${p(Math.floor(RND() * 60))}分`;
 }
 // drop repeated sentences (Markov chains loop) — keeps each 日志 from echoing itself
 function dedupeSentences(paras) {
@@ -559,17 +629,18 @@ function dedupeSentences(paras) {
     s = s.trim(); if (!s || seen.has(s)) return false; seen.add(s); return true;
   }).join('')).filter(Boolean);
 }
-// one 日志 entry: title (40% 《》) + nPara paragraphs of ~baseLen chars each
+// 日志 = TWO random full posts (markov prose) — fills the wide column. Each = title (40% 《》)
+// + paragraphs. Generated under a SEED so the share link reproduces the exact posts.
 function genRizhi(nPara, baseLen) {
   const S = window.SHUOSHUO; if (!S || !S.lines || !S.lines.length) return null;
-  let t = S.clauses[ri(S.clauses.length)]; if (Math.random() < 0.4) t = '《' + t + '》';
+  let t = S.clauses[ri(S.clauses.length)]; if (RND() < 0.4) t = '《' + t + '》';
   const paras = [];
   for (let i = 0; i < nPara; i++) paras.push(markovPara(baseLen + ri(40)));
   return { t, p: dedupeSentences(paras), rd: 12 + ri(90), c: ri(18), d: rzDate() };
 }
-// the module shows TWO posts: a main one, then a shorter one below in the same box
-function genRizhiNew() {
-  rizhiList = [genRizhi(2 + ri(2), 80), genRizhi(1 + ri(2), 45)].filter(Boolean);
+function genRizhiNew(seed) {
+  rzSeed = (seed == null) ? newSeed() : (seed >>> 0);
+  withSeed(rzSeed, () => { rizhiList = [genRizhi(3 + ri(2), 115), genRizhi(2, 85)].filter(Boolean); });
   renderRizhi();
 }
 function renderRizhi() {
@@ -579,7 +650,41 @@ function renderRizhi() {
     + (rz.p || []).map(x => `<p class="rizhi-p">${esc(x)}</p>`).join('')
     + `<div class="rizhi-meta">查看全文» 阅读(${rz.rd}) 评论(${rz.c}) 转载 分享<span class="rizhi-date">${esc(rz.d)}</span></div></div>`).join('');
 }
-$('#rizhiGen') && ($('#rizhiGen').onclick = genRizhiNew);
+$('#rizhiNew') && ($('#rizhiNew').onclick = () => genRizhiNew());
+$('#albumUpload') && ($('#albumUpload').onclick = () => toast('相册功能敬请期待～'));
+
+// ── 最近访客 (visitor records) — recovered classic QQ pixel avatars + 非主流 网名 ──
+// Avatars = window.AVATARS (Tencent ISUX pixel-retro classic system-avatar set, recovered
+// to site/assets/avatars/). Nicknames reuse the short 签名 clauses (read like 非主流 网名).
+let visitors = [];
+const VISIT_TIME = ['刚刚', '5分钟前', '半小时前', '1小时前', '3小时前', '今天', '昨天', '前天', '3天前', '上周'];
+function genVisitors(seed) {
+  vsSeed = (seed == null) ? newSeed() : (seed >>> 0);
+  const A = window.AVATARS || [], S = window.SHUOSHUO;
+  withSeed(vsSeed, () => {
+    visitors = [];
+    const usedA = new Set(), usedN = new Set();       // distinct avatars + nicks → less 雷同
+    let guard = 0;
+    while (visitors.length < 2 && A.length && guard++ < 300) {
+      const a = A[ri(A.length)];
+      const nick = (S && S.clauses) ? S.clauses[ri(S.clauses.length)] : '神秘访客';
+      if (usedA.has(a) && usedA.size < A.length) continue;
+      if (usedN.has(nick)) continue;
+      usedA.add(a); usedN.add(nick);
+      visitors.push({ a, n: nick, t: VISIT_TIME[ri(VISIT_TIME.length)] });
+    }
+  });
+  renderVisitors();
+}
+function renderVisitors() {
+  const box = $('#visitorList'); if (!box) return;
+  box.innerHTML = visitors.map(v =>
+    `<div class="visitor" title="${esc(v.n)} · ${esc(v.t)}来访">`
+    + `<img class="visitor-av" src="assets/avatars/${esc(v.a)}" alt="" loading="lazy">`
+    + `<div class="visitor-meta"><div class="visitor-nick">${esc(v.n)}</div>`
+    + `<div class="visitor-t">${esc(v.t)}来访</div></div></div>`).join('');
+}
+$('#visitorGen') && ($('#visitorGen').onclick = () => genVisitors());
 
 // share link
 function currentQQId() { const i = $('#qqshowInput'); return i ? i.value.trim() : ''; }
@@ -589,8 +694,10 @@ function buildShareState() {
   const st = {
     v: 1, n: (rawName || '').trim(), q: currentQQId(),
     sk: SEL.skin || '', co: SEL.color || '', tb: SEL.titlebar || '',
-    cu: SEL.cursor || '', fl: SEL.floaty || '', pl: SEL.player || '', mu: musicURL || '', pe, rz: rizhiList
+    cu: SEL.cursor || '', fl: SEL.floaty || '', pl: SEL.player || '', mu: musicURL || '', pe, rzs: rzSeed, vss: vsSeed
   };
+  // NOTE: 日志 + 访客 are NOT embedded — only their seeds (rzs/vss). They regenerate
+  // identically from the seed on load, keeping the link short.
   const player = $('#pageDeco .player-deco'); if (player && st.pl) st.pp = [px(player), py(player)];
   return st;
 }
@@ -606,7 +713,9 @@ async function applyState(st) {
   (st.pe || []).forEach(p => addDeco(p.i, { hang: true, x: p.x, y: p.y }));
   if (st.pl) { addPlayer(st.pl); const pe = $('#pageDeco .player-deco'); if (pe && st.pp) { pe.style.left = st.pp[0] + 'px'; pe.style.top = st.pp[1] + 'px'; } }
   if (st.mu) setMusic(st.mu);
-  rizhiList = st.rz || []; renderRizhi();
+  // regenerate 日志 + 访客 from their seeds (reproduces the sharer's exact content)
+  if (st.rzs != null) genRizhiNew(st.rzs); else { rizhiList = []; renderRizhi(); }
+  if (st.vss != null) genVisitors(st.vss); else { visitors = []; renderVisitors(); }
   render();   // market reflects the shared space's items (pinned + checkmarked)
 }
 // base64url over raw bytes (loop, not spread — safe for larger payloads when 说说 lands)
@@ -641,9 +750,9 @@ $('#shareBtn').onclick = async () => {
 function showForkBanner() {
   if ($('#forkBanner')) return;
   const b = document.createElement('div'); b.id = 'forkBanner';
-  b.innerHTML = `<span>正在浏览分享的空间</span><button id="forkBtn">做我自己的 →</button>`;
+  b.innerHTML = `<span>正在浏览分享的空间</span><button id="forkBtn">改成我的 →</button>`;
   document.body.appendChild(b);
-  $('#forkBtn').onclick = () => { history.replaceState(null, '', location.pathname); b.remove(); setEditMode(true); };
+  $('#forkBtn').onclick = () => setEditMode(true);   // setEditMode handles banner + hash cleanup
 }
 
 render();
@@ -658,9 +767,19 @@ render();
 // responsive
 
 function fitPage() {
-  const avail = document.documentElement.clientWidth;   // viewport minus any scrollbar
-  pageZoom = Math.min(1, avail / 1280);
+  // zoom the 1280 page to fit the WINDOW WELL (#stageWrap), not the whole viewport
+  const host = $('#stageWrap');
+  const avail = (host ? host.clientWidth : document.documentElement.clientWidth);
+  pageZoom = Math.min(1, avail / 1280);   // match .browser width
   const br = $('.browser'); if (br) br.style.zoom = pageZoom;
 }
 window.addEventListener('resize', fitPage);
 fitPage();
+
+// ── language toggle (EN ⇄ 中), shared with /museum/ via localStorage('lang') ──
+$('#lang') && ($('#lang').onclick = () => {
+  lang = lang === 'zh' ? 'en' : 'zh';
+  try { localStorage.setItem('lang', lang); } catch (e) { }
+  applyLang();
+});
+applyLang();   // paint chrome in the saved language on load

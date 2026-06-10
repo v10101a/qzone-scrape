@@ -5,91 +5,136 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>QQ空间</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
   <link
     href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&family=Noto+Sans+SC:wght@400;500;700&display=swap"
     rel="stylesheet" />
+  <!-- 楷 body font (霞鹜臻楷 LXGW ZhenKai GB) — sliced webfont via 中文网字计划/ZeoSeven -->
+  <link rel="stylesheet" href="https://fontsapi.zeoseven.com/2/main/result.css" />
   <link rel="stylesheet" href="qzone-library.css" />
   <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
 </head>
 
 <body>
-  <div id="stageWrap">
-    <div id="skinBg"></div>
-    <div class="browser">
-      <div class="browser-body" id="browserBody">
-        <div class="space">
-          <div class="masthead">
-            <div class="page-header" id="pageHeader"></div>
-            <div class="who" id="pageTitle">我的 QQ 空间</div>
-            <div class="nav"><a class="on">主页</a><a>日志</a><a>相册</a><a>音乐</a><a>留言板</a><a>个人档</a></div>
-          </div>
-          <div class="columns">
-            <div class="col col-main">
-              <section class="mod-profile mod-profile-headline">
-                <div class="hd">个人资料</div>
-                <div class="bd">
-                  <a class="qqshow-card" id="qqshow" target="_blank" rel="noopener" title="我的 QQ 秀">
-                    <iframe class="qqshow-frame" scrolling="no" loading="lazy" title="我的 QQ 秀"></iframe>
-                    <!-- <span class="qqshow-label">我的 QQ 秀 ↗</span> -->
-                  </a>
-                  <div class="name">
-                    <div class="qqshow-namerow">
-                      <div class="qqshow-name" id="profileName" data-ph="点此填写昵称" spellcheck="false">我</div>
-                      <button class="qqshow-edit-btn" id="profileEditBtn" title="编辑昵称">✎</button>
+  <!-- shared museum header (same as /museum/) — makes QZone feel like part of the site -->
+  <header class="topbar">
+    <div class="gradient">
+      <div class="brand">
+        <h1 data-i18n="brand">QQ空间装扮博物馆</h1>
+      </div>
+      <nav class="topnav">
+        <a href="../museum/index.html" data-i18n="navArchive">藏品</a>
+        <a class="on" aria-current="page" data-i18n="navQzone">QQ空间</a>
+        <a href="../museum/about.html" data-i18n="navAbout">关于</a>
+        <button id="lang">EN</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- the 空间 lives in an inset "window" well; its title-bar holds the share/edit tools -->
+  <main class="viewer">
+    <div class="viewer-frame">
+      <div class="viewer-bar">
+        <div class="viewer-loc"><span class="viewer-dot"></span><span id="viewerLoc">我的空间</span></div>
+        <div class="viewer-tools" id="toolbar">
+          <button id="marketToggle" data-i18n="market">装扮空间</button>
+          <button id="randomBtn" data-i18n="random">随机</button>
+          <button id="clearBtn" data-i18n="clear">清空</button>
+          <button id="editBtn">预览</button>
+          <button id="shareBtn" data-i18n="share">分享</button>
+        </div>
+      </div>
+      <div id="stageWrap">
+        <div id="skinBg"></div>
+        <div class="browser">
+          <div class="browser-body" id="browserBody">
+            <div class="space">
+              <div class="masthead">
+                <div class="page-header" id="pageHeader"></div>
+                <div class="who" id="pageTitle">我的 QQ 空间</div>
+                <div class="nav"><a class="on" data-i18n="navHome">主页</a><a data-i18n="navLog">日志</a><a
+                    data-i18n="navAlbum">相册</a><a data-i18n="navMusic">音乐</a><a data-i18n="navBoard">留言板</a><a
+                    data-i18n="navProfile">个人档</a></div>
+              </div>
+              <div class="columns">
+                <div class="col col-main">
+                  <section class="mod-profile mod-profile-headline">
+                    <div class="hd"><span data-i18n="profile">个人资料</span></div>
+                    <div class="bd">
+                      <a class="qqshow-card" id="qqshow" target="_blank" rel="noopener" title="我的 QQ 秀">
+                        <iframe class="qqshow-frame" scrolling="no" loading="lazy" title="我的 QQ 秀"></iframe>
+                        <!-- <span class="qqshow-label">我的 QQ 秀 ↗</span> -->
+                      </a>
+                      <div class="name">
+                        <div class="qqshow-namerow">
+                          <div class="qqshow-name" id="profileName" data-ph="点此填写昵称" spellcheck="false">我</div>
+                          <button class="qqshow-edit-btn" id="profileEditBtn" title="编辑昵称">✎</button>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div class="bottom"></div>
-              </section>
-              <section class="mod-profile">
+                    <div class="bottom"></div>
+                  </section>
+                  <section class="mod-profile">
+                    <div class="hd"><span data-i18n="visitors">最近访客</span><button class="hd-gen" id="visitorGen"
+                        title="随机访客">🎲</button></div>
+                    <div class="bd">
+                      <div class="visitors" id="visitorList"></div>
+                    </div>
+                    <div class="bottom"></div>
+                  </section>
+                  <!-- <section class="mod-profile">
                 <div class="hd">留言板</div>
                 <div class="bd"></div>
                 <div class="bottom"></div>
-              </section>
-            </div>
-            <div class="col col-menu">
-              <section class="mod-profile">
-                <div class="hd">最新日志<button class="hd-gen" id="rizhiGen" title="随机日志">🎲</button></div>
-                <div class="bd" id="rizhiBody"></div>
+              </section> -->
+                </div>
+                <div class="col col-menu">
+                  <section class="mod-profile">
+                    <div class="hd"><span data-i18n="diary">最新日志</span><a class="hd-action" id="rizhiNew" title="随机"
+                        data-i18n="writeDiary">写日记</a></div>
+                    <div class="bd" id="rizhiBody"></div>
+                    <div class="bottom"></div>
+                  </section>
+                  <!-- <section class="mod-profile">
+                <div class="hd">相册<a class="hd-action" id="albumUpload">上传照片 »</a></div>
+                <div class="bd">
+                  <div class="album-empty">相册还空着～</div>
+                </div>
                 <div class="bottom"></div>
-              </section>
+              </section> -->
+                </div>
+              </div>
             </div>
+            <div id="stageDeco"></div>
+            <div id="pageDeco"></div>
           </div>
         </div>
-        <div id="stageDeco"></div>
-        <div id="pageDeco"></div>
-      </div>
-    </div>
-  </div>
+      </div><!-- /#stageWrap -->
 
-  <div class="toolbar" id="toolbar">
-    <button id="marketToggle">装扮空间</button>
-    <button id="randomBtn">随机</button>
-    <button id="clearBtn">清空</button>
-    <button id="editBtn">预览</button>
-    <button id="shareBtn">分享</button>
-  </div>
-
-  <div class="market" id="market">
-    <h1>装扮空间</h1>
-    <div class="qqshow-edit">
-      <label for="qqshowInput">我的 QQ 秀</label>
-      <div class="row">
-        <input id="qqshowInput" placeholder="粘贴 qqshow2000.com 链接或 id…" />
-        <button id="qqshowRandom" title="随机">🎲</button>
-        <button id="qqshowApply">✓</button>
+      <div class="market" id="market">
+        <h1 data-i18n="market">装扮空间</h1>
+        <div class="qqshow-edit">
+          <label for="qqshowInput" data-i18n="qqshowLabel">我的 QQ 秀</label>
+          <div class="row">
+            <input id="qqshowInput" data-i18n-ph="qqshowPh" placeholder="粘贴 qqshow2000.com 链接或 id…" />
+            <button id="qqshowRandom" title="随机">🎲</button>
+            <button id="qqshowApply">✓</button>
+          </div>
+          <a class="qqshow-make" href="https://qqshow2000.com/" target="_blank" rel="noopener" data-i18n="create">去
+            qqshow2000 创建 → </a>
+        </div>
+        <div class="tabs" id="tabs"></div>
+        <div class="search"><input id="search" data-i18n-ph="searchPh" placeholder="按编号或 id 搜索…" /></div>
+        <div class="count" id="count"></div>
+        <div class="grid" id="grid"></div>
+        <div class="foot" id="foot"></div>
       </div>
-      <a class="qqshow-make" href="https://qqshow2000.com/" target="_blank" rel="noopener">去 qqshow2000 创建 → </a>
-    </div>
-    <div class="tabs" id="tabs"></div>
-    <div class="search"><input id="search" placeholder="按编号或 id 搜索…" /></div>
-    <div class="count" id="count"></div>
-    <div class="grid" id="grid"></div>
-    <div class="foot" id="foot"></div>
-  </div>
+    </div><!-- /.viewer-frame -->
+  </main>
 
   <script src="library_index.js"></script>
   <script src="shuoshuo_data.js"></script>
+  <script src="avatars_index.js"></script>
   <script src="qzone-library.js"></script>
 </body>
 
