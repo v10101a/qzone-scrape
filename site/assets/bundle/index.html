@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>装扮 self-contained bundle viewer</title>
+<!--
+  Runs a SWF 挂件 with ZERO live Tencent dependency. The service worker (sw.js)
+  intercepts every *.qq.com / *.gtimg.cn request the SWF makes (e.g. its font
+  SWFs) and serves the mirrored copy from ./mirror/, so it works offline.
+
+  MUST be served over http(s) (service workers don't run on file://):
+      cd web-scrape && python3 -m http.server 8000
+      open http://localhost:8000/demo/bundle/?swf=<path-to-swf-from-server-root>
+-->
+<style>
+  body{ margin:0; font-family:"Noto Sans SC",sans-serif; background:#11151a; color:#cfe; }
+  header{ padding:10px 14px; font-size:13px; color:#8fe3c4; }
+  header b{ color:#fff; }
+  #stage{ width:550px; height:400px; margin:0 auto;
+    background: conic-gradient(#2a2f37 90deg,#222730 0 180deg,#2a2f37 0 270deg,#222730 0) 0 0/22px 22px; }
+  #status{ padding:8px 14px; font-size:12px; color:#9fb; font-family:ui-monospace,monospace; white-space:pre-wrap; }
+</style>
+</head>
+<body>
+  <header>📦 <b>self-contained bundle</b> — SWF + mirrored deps via service worker (no live Tencent calls)</header>
+  <div id="stage"></div>
+  <div id="status">registering service worker…</div>
+  <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+  <script>
+    const out = (m) => (document.getElementById("status").textContent += "\n" + m);
+    const swf = new URLSearchParams(location.search).get("swf");
+
+    async function boot() {
+      if ("serviceWorker" in navigator) {
+        await navigator.serviceWorker.register("sw.js");
+        await navigator.serviceWorker.ready;
+        if (!navigator.serviceWorker.controller) {
+          // sw.js calls clients.claim() on activate → wait for it to take control
+          out("service worker installing — waiting for control…");
+          await new Promise((res) =>
+            navigator.serviceWorker.addEventListener("controllerchange", res, { once: true }));
+        }
+        out("service worker active ✓ (deps served from ./mirror/)");
+      } else {
+        out("⚠ no service worker support — deps would hit the live network");
+      }
+      if (!swf) { out("pass ?swf=<path> to load a 挂件"); return; }
+      const ruffle = window.RufflePlayer.newest();
+      const player = ruffle.createPlayer();
+      document.getElementById("stage").appendChild(player);
+      out("loading " + swf);
+      await player.load({ url: swf, autoplay: "on", muted: true,
+                          unmuteOverlay: "hidden", wmode: "transparent" });
+      out("loaded ✓ — any font/asset request was served locally by the SW");
+    }
+    boot();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1150 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  /* font-family: "Noto Sans SC", sans-serif; */
+  font-family: "SimSun", "宋体", serif;
+
+  background: #e9edf1;
+  overflow: hidden;
+}
+
+#stageWrap {
+  position: fixed;
+  inset: 0;
+  overflow: auto;
+  background: #dde6ec;
+}
+
+/* custom (follower) cursor active → suppress the native cursor on the whole stage,
+   including the hand/text cursors links, buttons & inputs show on hover. The toolbar
+   and market sit outside #stageWrap, so they keep their normal cursor. */
+body.custom-cursor #stageWrap,
+body.custom-cursor #stageWrap * {
+  cursor: none !important;
+}
+
+#skinBg {
+  position: absolute;
+  inset: 0;
+  min-height: 100%;
+  z-index: 0;
+  background: #dde6ec;
+}
+
+/* the page = a bounded 1280px frame on the tiled skin bg (no fake browser chrome).
+   The frame still bounds all decorations (overflow hidden) and casts a soft shadow. */
+.browser {
+  position: relative;
+  z-index: 2;
+  width: 1280px;
+  min-width: 1280px;
+  /* hard floor: the frame stays 1280 so the 1280px skin banner is true 1:1 size */
+  flex: none;
+  /* never let any future flex context shrink it */
+  /* real: 1280 banner window, 980 content centered inside it */
+  margin: 3rem auto;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(20, 28, 40, 0.23);
+  background: #fff;
+}
+
+/* the window body bounds EVERYTHING */
+.browser-body {
+  position: relative;
+  height: 900px;
+  /* tall like a real QZone page (was too short → looked squished) */
+  overflow: hidden;
+  background: #dde6ec;
+}
+
+#stageDeco {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* floaty */
+#pageDeco {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  pointer-events: none;
+}
+
+/* 挂件 + player */
+#pageDeco .deco {
+  pointer-events: auto;
+}
+
+/* content (980px) centered in the 1280px window */
+.space {
+  position: relative;
+  z-index: 3;
+  width: 980px;
+  min-height: 100%;
+  margin: 0 auto;
+  padding-top: 10px;
+}
+
+.columns {
+  justify-content: flex-start;
+  /* spacing above content is owned by .nav (margin-bottom) + .page-header */
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 0 14px 4px;
+}
+
+
+
+.who {
+  position: relative;
+  /* z-index only takes effect on a POSITIONED element — without this the absolute
+     .page-header (a positioned sibling) always paints on top of the static text */
+  z-index: 1;
+  /* above the banner image (auto/0), below the nav (z-index:2) */
+  margin-top: 5rem;
+  font-family: "ZCOOL KuaiLe", cursive;
+  font-size: 28px;
+  color: var(--c-nick, #fff);
+  /* page title takes the 配色 nickname color */
+  text-shadow: 0 2px 6px var(--c-tabbg, #5555553c);
+}
+
+.who .sign {
+  font-family: "Ma Shan Zheng", cursive;
+  font-size: 15px;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, .5);
+}
+
+/* QZone v5 nav: a horizontal strip of square ~25px tabs sitting ON a baseline border
+   (NOT rounded pills). The active tab is white and "opens" down into the content. */
+/* masthead band — constant height; banner is the backdrop, nav sits at its bottom on top */
+.masthead {
+  position: relative;
+  height: 130px;
+  margin-top: 10px;
+}
+
+.nav {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* line up with the BOTTOM of the title banner */
+  z-index: 2;
+  /* nav sits ON TOP of the title image */
+  display: flex;
+  gap: 1px;
+  padding: 0;
+  /* natural side gaps from the banner edges */
+  flex-wrap: wrap;
+  font-family: "SimSun", "宋体", serif;
+  /* border-bottom: 2px solid var(--c-tabborder, #8fbfe0); */
+  /* the baseline the tabs rest on = content-top */
+}
+
+.nav a {
+  font-size: 13px;
+  line-height: 25px;
+  color: var(--c-link, #2a5a8a);
+  padding: 0 18px;
+  margin-bottom: 0px;
+  /* overlap the baseline */
+  cursor: pointer;
+  background: var(--c-tabbg, #eaf4fd);
+  opacity: 0.9;
+  border: 1px solid var(--c-tabborder, #8fbfe0);
+  border-radius: 0;
+  /* v5 = square corners */
+}
+
+.nav a.on {
+  background: var(--c-tabactive, #fff);
+  color: var(--c-link, #1a4a7a);
+  font-weight: 700;
+  /* border-bottom: 0px solid var(--c-tabactive, #fff); */
+  position: relative;
+  z-index: 1;
+}
+
+/* 配色 accent (hover) color — what some scheme runs (e.g. 23–38) actually vary */
+.nav a:hover {
+  color: var(--c-hover, #0a7a2f);
+  border-color: var(--c-hover, var(--c-tabborder, #8fbfe0));
+}
+
+/* 页头/标题栏 banner (type 19, 715x100): backdrop that fills the masthead. Always present
+   (frame constant); only the image appears/disappears when a 标题栏 is applied. The bottom
+   ~26px sits behind the nav, leaving the upper part of the banner showing above it. */
+.page-header {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 100%;
+  /* span the full content width like a real 页头 banner */
+}
+
+.columns {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding-top: 14px;
+  /* small breathing room under the nav-line / banner, without disconnecting */
+}
+
+/* two columns filling the 980 content */
+.col-main {
+  flex: 1;
+}
+
+.col-menu {
+  flex: 2;
+  min-width: 0;
+}
+
+/* module boxes fill their column; header colored by the 配色 scheme */
+.mod-profile {
+  width: 100%;
+  margin-bottom: 14px;
+  background: rgba(255, 255, 255, .92);
+  border: 1px solid var(--c-tabborder, #c7e5eb);
+  /* v5: flat 1px border, square corners */
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .14);
+}
+
+.mod-profile .hd {
+  height: 37px;
+  line-height: 37px;
+  padding: 0 14px;
+  font-weight: 700;
+  color: var(--c-hdtext, #fff);
+  /* module title follows the 配色 scheme */
+  background: var(--c-hd, #7fa9c9);
+}
+
+.mod-profile .bd {
+  min-height: 54px;
+}
+
+.mod-profile .bottom {
+  display: none;
+}
+
+/* 🎲 generate button in a module header (说说) — edit-mode only */
+.hd-gen {
+  float: right;
+  margin-top: 7px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, .6);
+  background: rgba(255, 255, 255, .25);
+  color: var(--c-hdtext, #fff);
+  border-radius: 4px;
+  width: 24px;
+  height: 22px;
+  line-height: 1;
+  font-size: 12px;
+  padding: 0;
+}
+
+.hd-gen:hover {
+  background: rgba(255, 255, 255, .45);
+}
+
+body.view-only .hd-gen {
+  display: none;
+}
+
+/* generated 日志 — title · paragraph body · 阅读/评论/转载/分享 + date. Two posts share
+   the box; the second is divided off with a top border. */
+.rizhi {
+  padding: 10px 14px 12px;
+}
+
+.rizhi+.rizhi {
+  border-top: 1px solid #e6ebf0;
+}
+
+.rizhi-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #2a5a8a;
+  margin-bottom: 6px;
+}
+
+.rizhi-p {
+  font-size: 13px;
+  color: #444;
+  line-height: 1.9;
+  text-indent: 2em;
+  margin: 0 0 6px;
+}
+
+.rizhi-meta {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px dashed #e2e2e2;
+  font-size: 11px;
+  color: #9aa6b0;
+}
+
+.rizhi-date {
+  float: right;
+}
+
+/* embedded QQ秀 (qqshow2000.com) — a portrait avatar card in the 个人资料 module.
+   The iframe is over-sized + shifted up so the qqshow site's own header/footer is
+   clipped, leaving just the avatar + scene. The whole card links to the full view. */
+.qqshow-card {
+  position: relative;
+  display: block;
+  width: 210px;
+  max-width: 100%;
+  height: 320px;
+  margin: 8px auto;
+  overflow: hidden;
+  /* background: #000; */
+  /* border: 1px solid var(--c-tabborder, #c7e5eb); */
+  /* border-radius: 2px; */
+  text-decoration: none;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .35);
+}
+
+.name {
+  display: flex;
+}
+
+.qqshow-namerow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px auto 10px;
+  padding: 4px 6px 4px 10px;
+  background: #fff;
+  border: 1px solid #c3ccd8;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .08);
+}
+
+.qqshow-name {
+  text-align: center;
+  font-family: "SimSun", "宋体", serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #2a4d63;
+  min-width: 100px;
+  max-width: 150px;
+  outline: none;
+  word-break: break-word;
+}
+
+.qqshow-name:empty::before {
+  content: attr(data-ph);
+  color: #aaa;
+  font-weight: 400;
+}
+
+.qqshow-edit-btn {
+  flex: none;
+  cursor: pointer;
+  border: 1px solid #b9c0c9;
+  background: linear-gradient(#fcfcfd, #e2e5ea);
+  border-radius: 4px;
+  width: 24px;
+  height: 22px;
+  font-size: 13px;
+  line-height: 1;
+  color: #3a566e;
+  padding: 0;
+}
+
+.qqshow-edit-btn:hover {
+  background: linear-gradient(#fff, #d6e3f5);
+  color: #1559cf;
+}
+
+/* 火星文 toggle, active */
+.qqshow-edit-btn.on {
+  background: linear-gradient(#ffe9a8, #f4c84e);
+  border-color: #d8a93a;
+  color: #7a5800;
+}
+
+/* share toast + "remix this space" banner (both float above everything) */
+#toast {
+  position: fixed;
+  left: 50%;
+  bottom: 40px;
+  transform: translateX(-50%);
+  background: rgba(20, 28, 40, .92);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  z-index: 100000;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .3);
+}
+
+#forkBanner {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, .96);
+  border: 1px solid #c3ccd8;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  color: #33475a;
+  z-index: 100000;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .18);
+}
+
+#forkBanner button {
+  cursor: pointer;
+  border: 1px solid #4a86c5;
+  background: linear-gradient(#eaf4ff, #cfe4fb);
+  color: #1559cf;
+  border-radius: 5px;
+  padding: 4px 10px;
+  font-size: 13px;
+}
+
+/* in preview, the name isn't editable → hide the ✎ and the box chrome */
+body.view-only .qqshow-edit-btn {
+  display: none;
+}
+
+body.view-only .qqshow-namerow {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+body:not(.view-only) .qqshow-name[contenteditable="true"] {
+  cursor: text;
+}
+
+.qqshow-frame {
+  width: 250px;
+  height: 470px;
+  border: 0;
+  display: block;
+  margin-top: -50px;
+  margin-left: -20px;
+  /* clip the qqshow2000 top header bar */
+  pointer-events: none;
+  /* clicks fall through to the card link */
+}
+
+.qqshow-label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  font-size: 11px;
+  text-align: center;
+  color: #fff;
+  background: rgba(0, 0, 0, .55);
+  padding: 3px;
+  opacity: 0;
+  transition: opacity .15s;
+}
+
+.qqshow-card:hover .qqshow-label {
+  opacity: 1;
+}
+
+/* QZone-style control strip (top-right), modeled on the real 显示导航|装扮空间|自定义 bar:
+   a beveled gray bar of small 宋体 buttons separated by hairlines. Slides left so it
+   sits just beside the market panel when it's open. */
+.toolbar {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 46;
+  display: flex;
+  gap: 0;
+  padding: 3px;
+  background: linear-gradient(#fcfcfd, #d9dce0);
+  border: 1px solid #b4b8bd;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+  font-family: "SimSun", "宋体", serif;
+}
+
+.toolbar button {
+  border: 0;
+  border-left: 1px solid #c6c9ce;
+  cursor: pointer;
+  background: transparent;
+  color: #3a3f47;
+  padding: 4px 13px;
+  font-size: 12px;
+  font-family: inherit;
+}
+
+.toolbar button:first-child {
+  border-left: 0;
+}
+
+.toolbar button:hover {
+  background: rgba(255, 255, 255, .75);
+  color: #0a7a2f;
+}
+
+/* active state for an open market / the 自定义 toggle — the white "pressed" tab look */
+.toolbar button.on,
+.toolbar button.primary {
+  background: #fff;
+  color: #1559cf;
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1px #b9c7e6;
+  border-radius: 2px;
+}
+
+/* preview (view-only): clean toolbar — keep only 编辑 (to exit preview) + 分享.
+   Hide the editing actions 装扮空间 / 随机 / 清空. */
+body.view-only #marketToggle,
+body.view-only #randomBtn,
+body.view-only #clearBtn {
+  display: none;
+}
+
+#marketToggle::before {
+  content: "\25B8\00A0";
+  /* ▸ marker like the real bar */
+  color: #8a8f96;
+}
+
+/* the buttons always stay visible (edit OR preview) — only the per-item delete/drag
+   chrome is what view-only hides (see .deco rules below). */
+
+/* decorations */
+.deco {
+  position: absolute;
+  cursor: grab;
+  user-select: none;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, .25));
+}
+
+.deco:active {
+  cursor: grabbing;
+}
+
+/* control chrome — always visible in edit mode so items are obviously deletable */
+.deco .ph {
+  position: absolute;
+  top: -30px;
+  right: 0;
+  display: flex;
+  gap: 5px;
+  z-index: 2;
+}
+
+.deco .ph button {
+  border: 0;
+  cursor: pointer;
+  background: #ffffff;
+  color: #000000;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 5px;
+}
+
+.deco .ph button.del:hover,
+.deco .ph button.mbtn:hover {
+  background: #0033ff;
+  color: #ffffff;
+}
+
+.deco .ph button[data-fs] {
+  background: #3949ab;
+}
+
+/* view-only: hide all editing chrome, no grab cursor */
+body.view-only .deco .ph {
+  display: none;
+}
+
+body.view-only .deco {
+  cursor: default;
+}
+
+.deco.fullscreen {
+  z-index: 4;
+}
+
+.swfdeco {
+  position: absolute;
+}
+
+/* transparent overlay over the (UI-only) music player so the WHOLE thing is a drag handle */
+.drag-surface {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  cursor: grab;
+}
+
+.drag-surface:active {
+  cursor: grabbing;
+}
+
+/* in view-only the player surface stays clickable (so you can play/pause), just no grab cursor */
+body.view-only .drag-surface {
+  cursor: pointer;
+}
+
+/* now-playing marquee  */
+.player-deco .mp-title {
+  display: none;
+}
+
+.player-deco.has-music .mp-title {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  top: 8%;
+  /* top: 50%;
+  transform: translateY(-50%); */
+  z-index: 3;
+  height: 30px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.player-deco .mp-title span {
+  display: inline-block;
+  white-space: nowrap;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 18px;
+  /* text follows the theme */
+  color: var(--c-hdtext, #fff);
+  text-shadow: 1px 0 8px var(--c-hd, #00000050);
+  padding-left: 90%;
+  animation: mp-marquee 7s linear infinite;
+}
+
+@keyframes mp-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* music-link popover — opens when you click the player gadget (it IS the bg-music player) */
+.music-pop {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  margin-bottom: 30px;
+  /* clear the ✕ row above the gadget */
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  width: 280px;
+  padding: 7px;
+  background: rgba(20, 28, 38, .92);
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .4);
+  z-index: 6;
+  font-family: "Noto Sans SC", sans-serif;
+}
+
+.music-pop.open {
+  display: flex;
+}
+
+.music-pop .mp-row {
+  display: flex;
+  gap: 4px;
+}
+
+.music-pop .mp-in {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid #5b6776;
+  border-radius: 4px;
+  padding: 5px 7px;
+  font-size: 12px;
+  background: #fff;
+  color: #222;
+  outline: none;
+}
+
+.music-pop .mp-go {
+  flex: none;
+  border: 0;
+  cursor: pointer;
+  background: #1559cf;
+  color: #fff;
+  border-radius: 4px;
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.music-pop .mp-st {
+  font-size: 10px;
+  color: #b9c6d6;
+  min-height: 12px;
+}
+
+.music-pop .mp-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.music-pop .mp-eg {
+  font-size: 10px;
+  color: #7fb0ff;
+  text-decoration: none;
+}
+
+.music-pop .mp-eg:hover {
+  text-decoration: underline;
+}
+
+.music-pop .mp-del {
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: #ff9a9a;
+  font-size: 10px;
+  padding: 0;
+}
+
+.music-pop .mp-del:hover {
+  color: #ff5a5a;
+  text-decoration: underline;
+}
+
+body.view-only .music-pop {
+  display: none !important;
+}
+
+.snowflake {
+  position: absolute;
+  pointer-events: none;
+}
+
+/* JS-positioned, faithful to fall() */
+
+/* ─────────────── collapsible "market" (item browser) ─────────────── */
+/* the 素材库 (精品装饰) drops down BELOW the top bar, like the real QZone edit panel */
+.market {
+  position: fixed;
+  top: 52px;
+  right: 14px;
+  width: 440px;
+  max-height: calc(100vh - 70px);
+  z-index: 44;
+  display: flex;
+  flex-direction: column;
+  background: #eef0f3;
+  border: 1px solid #b4b8bd;
+  border-radius: 4px;
+  box-shadow: 0 12px 32px rgba(30, 40, 60, .32);
+  overflow: hidden;
+  font-family: "SimSun", "宋体", serif;
+  /* match the QZone top-bar chrome */
+  transform-origin: top right;
+  transition: opacity .16s ease, transform .16s ease;
+}
+
+.market.collapsed {
+  opacity: 0;
+  transform: scale(.97) translateY(-8px);
+  pointer-events: none;
+}
+
+/* "我的 QQ 秀" editor at the top of the market — paste a qqshow2000 link/id */
+.qqshow-edit {
+  margin: 10px 12px 8px;
+  padding: 10px 12px;
+  background: #e7ecf3;
+  border: 1px solid #c3ccd8;
+  border-radius: 4px;
+}
+
+.qqshow-edit label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #2a4a6a;
+  margin-bottom: 6px;
+}
+
+.qqshow-edit .row {
+  display: flex;
+  gap: 6px;
+}
+
+.qqshow-edit input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid #cdd2e6;
+  border-radius: 7px;
+  padding: 7px 10px;
+  background: #fff;
+  color: #333;
+  font-size: 12.5px;
+  outline: none;
+}
+
+.qqshow-edit input:focus {
+  border-color: #1559cf;
+}
+
+.qqshow-edit button {
+  cursor: pointer;
+  border: 1px solid #9fb0c8;
+  background: linear-gradient(#fbfdff, #dbe6f5);
+  color: #1559cf;
+  font-weight: 700;
+  font-family: "SimSun", "宋体", serif;
+  font-size: 12.5px;
+  padding: 0 12px;
+  border-radius: 3px;
+}
+
+.qqshow-edit button:hover {
+  background: linear-gradient(#fff, #cfe0f5);
+}
+
+.qqshow-edit .qqshow-make {
+  display: inline-block;
+  margin-top: 7px;
+  font-size: 11px;
+  color: #4a72a6;
+  text-decoration: none;
+}
+
+.qqshow-edit .qqshow-make:hover {
+  text-decoration: underline;
+}
+
+.market h1 {
+  font-family: "SimSun", "宋体", serif;
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0;
+  padding: 8px 14px;
+  color: #2a4a6a;
+  background: linear-gradient(#fcfcfd, #d9dce0);
+  border-bottom: 1px solid #b4b8bd;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 6px 12px;
+}
+
+.tabs button {
+  cursor: pointer;
+  background: linear-gradient(#fcfcfd, #e2e5ea);
+  border: 1px solid #b9c0c9;
+  color: #3a3f47;
+  padding: 4px 11px;
+  border-radius: 2px;
+  font-family: "SimSun", "宋体", serif;
+  font-size: 12.5px;
+}
+
+.tabs button:hover {
+  color: #0a7a2f;
+}
+
+.tabs button.on {
+  background: #fff;
+  color: #1559cf;
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1px #b9c7e6;
+}
+
+.search {
+  margin: 4px 14px 6px;
+}
+
+.search input {
+  width: 100%;
+  border: 1px solid #dde1ea;
+  border-radius: 8px;
+  padding: 9px 12px;
+  background: #fff;
+  color: #333;
+  font-size: 13px;
+  outline: none;
+}
+
+.search input:focus {
+  border-color: #1559cf;
+}
+
+.count {
+  padding: 0 16px 6px;
+  font-size: 11px;
+  color: #8a93a5;
+}
+
+.grid {
+  flex: 1;
+  overflow: auto;
+  display: grid;
+  gap: 8px;
+  padding: 8px 14px 28px;
+  align-content: start;
+}
+
+.grid.c1 {
+  grid-template-columns: 1fr;
+}
+
+.grid.c2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid.c3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.grid.c4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.grid.c5 {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.grid.c6 {
+  grid-template-columns: repeat(6, 1fr);
+}
+
+.cell {
+  position: relative;
+  min-width: 0;
+  /* never force the grid track wider than its column → no horizontal overflow */
+  height: 96px;
+  /* explicit per-cell height (overridden per tab below). NOTE: aspect-ratio is
+     unreliable on grid items with auto rows — the row collapses to the image's
+     min-height and cells go cramped. A real height per tab avoids that. */
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid #e3e7ef;
+  background: conic-gradient(#fbfbfd 90deg, #eef0f5 0 180deg, #fbfbfd 0 270deg, #eef0f5 0) 0 0/14px 14px;
+  transition: transform .12s, box-shadow .12s;
+}
+
+.cell:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 14px rgba(60, 70, 100, .18);
+  z-index: 2;
+}
+
+/* the leading "无" (none / disable) cell — turns the singular decoration off */
+.cell.cell-none {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f6f7fb;
+  border: 1px dashed #c2c8d6;
+  color: #97a0b3;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.cell.cell-none:hover {
+  color: #1559cf;
+  border-color: #1559cf;
+}
+
+/* per-tab cell HEIGHTS — matched to each item's natural proportions at its column count */
+.grid.t-skin .cell {
+  height: 120px;
+}
+
+/* wide banner */
+.grid.t-pendant .cell {
+  height: 108px;
+}
+
+/* tall hanging ornament */
+.grid.t-floaty .cell,
+.grid.t-cursor .cell {
+  height: 92px;
+}
+
+.grid.t-color .cell {
+  height: 66px;
+}
+
+.grid.t-player .cell {
+  height: 100px;
+}
+
+/* 标题栏 = wide ~715x100 header strips (one per row) */
+.grid.t-titlebar .cell {
+  height: 62px;
+}
+
+.grid.t-titlebar .cell img {
+  object-fit: contain;
+}
+
+.cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.grid.t-skin .cell img {
+  object-fit: cover;
+}
+
+/* player previews are transparent skins — show the whole thing on a contrasting bg */
+.grid.t-player .cell img {
+  object-fit: contain;
+}
+
+/* items with transparency/white content (挂件·漂浮物·鼠标·标题栏·音乐) sit on ONE uniform
+   white-ish gradient instead of the transparent checker — so white art/text stays visible. */
+.grid.t-pendant .cell,
+.grid.t-floaty .cell,
+.grid.t-cursor .cell,
+.grid.t-titlebar .cell,
+.grid.t-player .cell {
+  background: linear-gradient(160deg, #fdfdff, #dfe4ee);
+}
+
+.cell .id {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  font-size: 9px;
+  color: #fff;
+  background: rgba(0, 0, 0, .42);
+  padding: 1px;
+  text-align: center;
+}
+
+/* selection indicator (QQ blue ring + checkmark badge) */
+.cell.on {
+  outline: 3px solid #1559cf;
+  outline-offset: -3px;
+}
+
+.cell.on::after {
+  content: "✓";
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: #1559cf;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .45);
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* 配色 swatch = a mini-palette: big nav band on top + a strip of the key colors below */
+.cell.swatch {
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+}
+
+.cell.swatch .sw-main {
+  flex: 1;
+}
+
+.cell.swatch .sw-strip {
+  display: flex;
+  height: 36%;
+  border-top: 1px solid rgba(255, 255, 255, .5);
+}
+
+.cell.swatch .sw-strip i {
+  flex: 1;
+  display: block;
+}
+
+/* number sits as a small pill top-left so it doesn't cover the palette strip */
+.cell.swatch .id {
+  left: 3px;
+  right: auto;
+  top: 3px;
+  bottom: auto;
+  padding: 0 5px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, .5);
+}
+
+.foot {
+  font-size: 10px;
+  color: #98a1b2;
+  padding: 8px 16px;
+  border-top: 1px solid #e6e9f0;
+}
+
+.foot code {
+  color: #1559cf;
+}
+
+/* ── mobile: the editing chrome goes responsive (the QZone page itself just scales
+   via JS zoom). The market becomes a full-screen sheet so it's usable on a phone. ── */
+@media (max-width: 640px) {
+  .market {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    max-height: 100vh;
+    border-radius: 0;
+    border: 0;
+  }
+
+  .market.collapsed {
+    transform: translateY(-100%);
+  }
+
+  .toolbar {
+    top: 8px;
+    right: 8px;
+  }
+}

@@ -1,0 +1,14 @@
+@charset 'utf-8';
+.layout-nav .head-avatar .head-dress{left: -1px;top: -1px;background-image:url('head_dress.png');_background-image:none;}
+.mod-profile-headline .inner,
+.mod-profile.inner {box-shadow:none;}
+.mod-profile-headline .inner{border:0; border-bottom-left-radius:0;border-bottom-right-radius:0; background-image:url('mod_profile_headline.png')}
+.mod-profile-headline .bd{padding-bottom:21px; padding-top:23px;}
+.mod-profile-headline .bottom, .mod-profile .bottom{ display:block; height:8px; background-position:left top;background-repeat:no-repeat;background-image:url('bottom.png');}
+.mod-profile .inner{border:0;background-color:transparent;}
+.mod-profile .hd{height:37px;border:0;background-color:transparent;background-image:url('hd.png');}
+.mod-profile .bd{background-repeat:repeat-y;background-image:url('mod_profile.png');}.mod-profile .hd{_background-image:url('hd_ie6.png')}
+.mod-profile-headline .bottom,.mod-profile .bottom{_background-image:url('bottom_ie6.png')}
+.mod-profile .bd{_background-image:url('mod_profile_ie6.png')}
+.mod-profile-headline .inner{_background-image:url('mod_profile_headline_ie6.png')}
+

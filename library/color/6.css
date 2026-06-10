@@ -1,0 +1,38 @@
+@charset "utf-8";
+.cssStart{display:none}
+body{color:#DCDCDC;background-color:#FFFFFF;}
+.gb_copyright{color:#B7B7B7;}
+.text-input,.text-input-s, textarea{border-color:#FFBD5F;}
+.c_tx3,.c_tx3:link,.c_tx3:visited{color:#A2A2A2;}
+.c_tx4,.c_tx4:link,.c_tx4:visited{color:#EABF52;}
+.c_tx5,.c_tx5:link,.c_tx5:visited{color:#3BA06E;}
+a,a:link,a:visited,.c_tx2,.c_tx2:link,.c_tx2:visited{color:#DCDCDC;}
+a:hover,a:active,.c_tx,.c_tx:link,.c_tx:visited{color:#EABF52;}
+#spacename, #spaceexplain, #qzoneurl{color:#FBFFFF;}
+.style_menu_t .op span{color:#FFFFFF;background-color:#0B1508;}
+.bor,.tbor,.bbor,.lbor,.rbor,.bgr,.bgr2,.mode_menu_tag .menuon,.mode_menu_tag .menulefton,.mode_menu_tag a,.mode_menu_tag2 ul li a{border-color:#B99738;}
+.bor2,.bor2,.tbor2,.bbor2,.lbor2,.rbor2{border-color:#7D9265;}
+.bor3,.lbor3,.rbor3,.bbor3,.tbor3{border-color:#C39A55;}
+.bor4,.lbor4,.rbor4,.bbor4,.tbor4{border-color:#C39A55;}
+.bor5,.lbor5,.rbor5,.bbor5,.tbor5{border-color:#C39A55;}
+.bg,.bgr{background-color:#334024;}
+.bg2,.bgr2{background-color:#68522D;}
+.bg3{background-color:#B99738;}
+.bg4{background-color:#8B7241;}
+.bg5{background-color:#68522D;}
+.bg6{background-color:#68522D;}
+.bgr3{background-color:#EEF7FF;border-color:#ACDFF2;}
+.bg_mode .mode_gb,.mode_menu_tag .menuon,.mode_menu_tag .menulefton,.mode_menu_tag2 ul li.nowtag a{background-color:#334024;}
+.bg_mode .style_mode_gb_title{background-color:transparent;}
+.bg_mode .mode_gb_title{background-color:transparent;}
+.bg_mode .style_mode_gb_title .bg_mode_gb_title,.bg_mode .style_mode_gb_title .bg_mode_gb_title a{color:#33362F;}
+.bg_mode .style_mode_gb_title .bg_mode_gb_title{background:url(/ac/qzone_v5/skin/6/style.png) repeat-x 0 -257px;}
+.bg_mode .style_mode_gb_title .bg_mode_gb_title .icon_title{background-image:url(/ac/qzone_v5/skin/6/style.png);}
+.bg_mode .mode_gb_opmenu{background-color:#334024;}
+.bt_tx1,.bt_tx2,.bt_tx4,.bt_tx5,.bt_tx6,.bt_tx7{background-image:url(/ac/qzone_v5/skin/6/style.png);color:#FFFFFF;}
+.mode_menu_tag{background-color:#334024;background-image:url(/ac/qzone_v5/skin/6/bg_line_menu.gif);}
+.mode_menu_tag2{background-color:transparent;background-image:url(/ac/qzone_v5/skin/6/bg_line_menu.gif);border:medium none;}
+.mode_menu_tag2 ul li.nowtag a{border-bottom-color:#334024;}
+.mode_menu_tag2 ul li a{background-color:#334024;}
+.cssEnd{display:none}
+/*  |xGv00|16b92eec39da024efb69f40394cab65c */

@@ -1,0 +1,14 @@
+<!doctype html>
+<meta charset="utf-8" />
+<body style="margin:0;background:transparent">
+<div id="stage"></div>
+<script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+<script>
+  const swf = new URLSearchParams(location.search).get('swf');
+  const pl = window.RufflePlayer.newest().createPlayer();
+  pl.id = 'rp'; pl.style.width = '360px'; pl.style.height = '280px';
+  document.getElementById('stage').appendChild(pl);
+  pl.load({ url: swf, autoplay: 'on', muted: true, unmuteOverlay: 'hidden', wmode: 'transparent',
+    parameters: 'list=晴天|稻香|七里香|江南|童话&musicName=晴天&music=晴天|稻香|七里香|江南|童话' }).catch(() => {});
+</script>
+</body>

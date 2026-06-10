@@ -1,0 +1,174 @@
+.cssStart{display:none}
+/*
+=======================================================
+	文件名：gb_color.css
+	作者：g_ISRD_Web_Rebuilder Ghostzhang
+	说明：Qzone模版里模块的文字、边框等模版样式，由不同模版分别定义。
+	提供第三方模块模版样式支持。
+=======================================================
+*/
+/*=S 滚动条颜色 ==
+html,body{
+scrollbar-arrow-color:#FFFFFF;
+scrollbar-face-color:#330066;
+scrollbar-darkshadow-color:#CBC4B3;
+scrollbar-highlight-color:#2F1F20;
+scrollbar-3dlight-color:#CCCCCC;
+scrollbar-shadow-color:#3F3154;
+scrollbar-track-color:#291608;
+}
+==E== 滚动条颜色 */
+/*=S 文字颜色 */
+body{
+color:#666666;
+background-color:#F3F3F3;
+}
+.gb_copyright{
+color:#B7B7B7;
+}
+.text-input,.text-input-s, textarea{
+border-color:#8298BF;
+}
+.c_tx,.stencillink a:link,.stencillink a:visited{
+color:#1974C7 !important;
+}
+.stencillink a:link,.stencillink a:visited{
+font-weight:normal;
+text-decoration:underline;
+}
+.c_tx2,.reversallink a:link,.reversallink a:visited{
+color:#666666 !important;
+}
+.c_tx3{
+color:#9E9E9E;
+}
+.c_tx4,.c_tx4:link,.c_tx4:visited{
+color:#31679F;
+}
+.nav a:link,.nav a:visited{
+color:#5C6672;
+}
+a,a:link,a:visited,.c_tx2,.c_tx2:link,.c_tx2:visited{
+color:#666666;
+}
+a:hover,a:active,.c_tx,.c_tx:link,.c_tx:visited{
+color:#31679F;
+}
+.hit,.hit:link,.hit:visited{
+color:#C96B17 !important;
+}
+/*=E 文字颜色 */
+/*=S 空间顶部信息 */
+#spacename{
+/*空间名称*/
+color:#5C6672;
+}
+#spaceexplain{
+/*空间说明*/
+color:#4A515A;
+}
+#qzoneurl{
+/*空间连接*/
+color:#4A515A;
+}
+.style_menu_t .op span{
+/*首页按钮文字*/
+background-color:transparent;
+color:#5C6672;
+}
+/*=E 空间顶部信息 */
+/*=S 边框背景颜色 */
+.bor,.tbor,.bbor,.lbor,.rbor,.bgr,.bgr2{
+border-color:#B0B8BB;
+}
+.bg,.bgr{
+background-color:#F3F3F3;
+}
+.bg2,.bgr2{
+background-color:#E6E6E6;
+}
+.bg3{
+background-color:#ABE0F2;
+}
+.bgr3{
+border-color:#DCDCDC;
+background-color:#FFFFFF;
+}
+.bor2,.bbor2,.tbor2{
+border-color:#DCDCDC;
+}
+.bor3,.bbor3,.tbor3{
+border-color:#DCDCDC;
+}
+.bg4{
+background-color:#F6FCFF;
+}
+.bg5{
+background-color:#E3E3E3;
+}
+.bg6{
+background-color:#EEEEEE;
+}
+/*=E 边框背景颜色 */
+
+/*=S 公共模块 */
+.bg_mode .mode_gb{
+/* 公共模块的背景 */
+background-color:transparent;
+}
+.bg_mode .mode_gb_title{
+/* 公共模块标题的背景 */
+background-color:transparenr;
+}
+.bg_mode .style_mode_gb_title .bg_mode_gb_title,.bg_mode .style_mode_gb_title .bg_mode_gb_title a{
+/* 公共模块标题的文字颜色 */
+color:#5C6672;
+}
+.bg_mode .style_mode_gb_title .bg_mode_gb_title{
+/* 公共模块标题的背景 */
+height:30px;
+line-height:30px;
+}
+.bg_mode .style_mode_gb_title .bg_mode_gb_title .icon_title{
+/* 公共模块标题的背景 */
+width:6px;
+}
+.bg_mode .mode_gb_opmenu{
+/* 公共模块中操作按钮的背景 */
+background-color:#F3F3F3;
+}
+/*=E 公共模块 */
+
+/*=S 按钮 */
+.bt_tx1,.bt_tx2,.bt_tx4,.bt_tx5,.bt_tx6,.bt_tx7{
+background-image:url(/ac/qzone_v5/skin/150/style.png);
+color:#FFFFFF;
+}
+/*=E 按钮 */
+
+/*=S 模块内上方TAG菜单 */
+.mode_menu_tag{
+background-color:transparent;
+background-image:url(/ac/qzone_v5/skin/150/bg_line_menu.gif);
+}
+.mode_menu_tag .menuon,.mode_menu_tag .menulefton{
+background-color:transparent;
+border-color:#B8E8FA;
+}
+.mode_menu_tag2{
+background-color:transparent;
+background-image:url(/ac/qzone_v5/skin/150/bg_line_menu.gif);
+border:medium none;
+}
+.mode_menu_tag2 ul li.nowtag a{
+background-color:#FFFFFF;
+border-bottom-color:#FFFFFF;
+color:#666666 !important;
+}
+.mode_menu_tag2 ul li a{
+background-color:#F3F3F3;
+border-color:#B0B8BB;
+}
+/*=E 模块内上方TAG菜单 */
+.cssEnd{display:none}
+/*  |xGv00|76c97c4bb24c52bf98ab647b7ccdcac2 */

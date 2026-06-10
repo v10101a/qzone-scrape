@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<!-- Minimal Ruffle host page. ?swf=<url-encoded path relative to repo root>.
+     render.mjs serves the repo root over http and drives this with Playwright. -->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      /* fully transparent stage so omitBackground screenshots capture only the
+         挂件's own pixels (alpha = real content) */
+      html, body { margin: 0; background: transparent; }
+      #stage { width: 550px; height: 400px; background: transparent; }
+    </style>
+  </head>
+  <body>
+    <div id="stage"></div>
+    <script src="/ruffle-harness/node_modules/@ruffle-rs/ruffle/ruffle.js"></script>
+    <script>
+      window.__ruffleState = { ready: false, loaded: false, error: null };
+      const params = new URLSearchParams(location.search);
+      const swf = params.get("swf");
+      try {
+        window.RufflePlayer = window.RufflePlayer || {};
+        const ruffle = window.RufflePlayer.newest();
+        const player = ruffle.createPlayer();
+        player.id = "rp";
+        document.getElementById("stage").appendChild(player);
+        // Surface Ruffle's own warnings/errors to the page console too.
+        player.addEventListener("loadedmetadata", () => { window.__ruffleState.loaded = true; });
+        player
+          .load({ url: swf, autoplay: "on", muted: true, unmuteOverlay: "hidden",
+                  wmode: "transparent", allowScriptAccess: true, letterbox: "off" })
+          .then(() => { window.__ruffleState.ready = true; })
+          .catch((e) => { window.__ruffleState.error = String(e); });
+      } catch (e) {
+        window.__ruffleState.error = String(e);
+      }
+    </script>
+  </body>
+</html>

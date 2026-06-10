@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QQ空间</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&family=Noto+Sans+SC:wght@400;500;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="qzone-library.css" />
+  <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+</head>
+
+<body>
+  <div id="stageWrap">
+    <div id="skinBg"></div>
+    <div class="browser">
+      <div class="browser-body" id="browserBody">
+        <div class="space">
+          <div class="masthead">
+            <div class="page-header" id="pageHeader"></div>
+            <div class="who" id="pageTitle">我的 QQ 空间</div>
+            <div class="nav"><a class="on">主页</a><a>日志</a><a>相册</a><a>音乐</a><a>留言板</a><a>个人档</a></div>
+          </div>
+          <div class="columns">
+            <div class="col col-main">
+              <section class="mod-profile mod-profile-headline">
+                <div class="hd">个人资料</div>
+                <div class="bd">
+                  <a class="qqshow-card" id="qqshow" target="_blank" rel="noopener" title="我的 QQ 秀">
+                    <iframe class="qqshow-frame" scrolling="no" loading="lazy" title="我的 QQ 秀"></iframe>
+                    <!-- <span class="qqshow-label">我的 QQ 秀 ↗</span> -->
+                  </a>
+                  <div class="name">
+                    <div class="qqshow-namerow">
+                      <div class="qqshow-name" id="profileName" data-ph="点此填写昵称" spellcheck="false">我</div>
+                      <button class="qqshow-edit-btn" id="profileEditBtn" title="编辑昵称">✎</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="bottom"></div>
+              </section>
+              <section class="mod-profile">
+                <div class="hd">留言板</div>
+                <div class="bd"></div>
+                <div class="bottom"></div>
+              </section>
+            </div>
+            <div class="col col-menu">
+              <section class="mod-profile">
+                <div class="hd">最新日志<button class="hd-gen" id="rizhiGen" title="随机日志">🎲</button></div>
+                <div class="bd" id="rizhiBody"></div>
+                <div class="bottom"></div>
+              </section>
+            </div>
+          </div>
+        </div>
+        <div id="stageDeco"></div>
+        <div id="pageDeco"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toolbar" id="toolbar">
+    <button id="marketToggle">装扮空间</button>
+    <button id="randomBtn">随机</button>
+    <button id="clearBtn">清空</button>
+    <button id="editBtn">预览</button>
+    <button id="shareBtn">分享</button>
+  </div>
+
+  <div class="market" id="market">
+    <h1>装扮空间</h1>
+    <div class="qqshow-edit">
+      <label for="qqshowInput">我的 QQ 秀</label>
+      <div class="row">
+        <input id="qqshowInput" placeholder="粘贴 qqshow2000.com 链接或 id…" />
+        <button id="qqshowRandom" title="随机">🎲</button>
+        <button id="qqshowApply">✓</button>
+      </div>
+      <a class="qqshow-make" href="https://qqshow2000.com/" target="_blank" rel="noopener">去 qqshow2000 创建 → </a>
+    </div>
+    <div class="tabs" id="tabs"></div>
+    <div class="search"><input id="search" placeholder="按编号或 id 搜索…" /></div>
+    <div class="count" id="count"></div>
+    <div class="grid" id="grid"></div>
+    <div class="foot" id="foot"></div>
+  </div>
+
+  <script src="library_index.js"></script>
+  <script src="shuoshuo_data.js"></script>
+  <script src="qzone-library.js"></script>
+</body>
+
+</html>

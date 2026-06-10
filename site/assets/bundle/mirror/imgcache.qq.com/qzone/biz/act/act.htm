@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+<title>认证空间互动专区</title>
+<script type="text/javascript">
+window._PAGE_TIME=[new Date];
+document.domain = 'qq.com';
+var parentDomain = parent.location.hostname
+if(parentDomain.indexOf('qzone.qq.com') == -1) {
+    document.domain = location.hostname;
+}
+(function(){
+	var css, b='<link rel="stylesheet" rev="stylesheet" href="', e='" type="text/css" media="screen" />';
+	b += 'http://'+ (parent.siDomain||'qzonestyle.gtimg.cn');
+	css = [
+		'/qzone_v6/gb/skin/'+ (parent.g_StyleID.toString().split('/').pop()||1) +'.css',
+		'/open_proj/app_cert_corp.css', '/qzonestyle/global/css/qzfl.css'
+	];
+	document.write(b+ css.join(e+b) +e);
+})();
+</script>
+</head>
+<body>
+<div class="bg_mode" id="ifNeedLogin" style="display:none">
+	<div class="box_ml bor">
+		<div class="mode_gb">
+			<div class="mode_gb_title style_mode_gb_title">
+				<div class="bg_mode_gb_title">
+					<h3>互动专区</h3> 
+				</div>
+			</div>
+			<div class="mode_gb_cont"> 
+				<p>请先登录！点此<a href="javascript:;" id="login" class="c_tx unline" title="点此登录">登录</a>。</p>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+(function(){
+	var js, b='<script type="text/javascript" src="', e='" charset="utf-8"><\/script>';
+	js = [
+		parent.g_V && typeof(parent.g_V.qz)==='string' ? '/ac/qzone/qzfl/qzfl'+parent.g_V.qz+'.js' : '/ac/qzfl/release/qzfl_for_qzone.js',
+		'/qzone/qzfl/appclientlib.js', (parent.g_fullMode==11?'v4':'v3')+'/js/common.js'
+	];
+	document.write(b+ js.join(e+b) +e);
+})();
+window._PAGE_TIME.push(new Date);
+</script>
+<script type="text/javascript">
+QZFL.pageEvents.pageBaseInit();
+QZFL.pageEvents.onloadRegister(function(){
+//	QACT.speed.create('QactJump', [175,362,1]);
+//	QACT.speed.report('QactJump');
+	QACT.Jump.direct();
+});
+</script>
+</body>
+</html>

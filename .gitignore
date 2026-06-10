@@ -1,0 +1,19 @@
+# env
+.venv/
+__pycache__/
+*.pyc
+node_modules/
+ruffle-harness/node_modules/
+ruffle-harness/ruffle/
+
+# data
+data/assets/
+data/*.jsonl
+archive/
+
+# FFDec jar
+tools/ffdec*/
+tools/*.zip
+
+# OS
+.DS_Store

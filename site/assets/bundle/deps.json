@@ -1,0 +1,37 @@
+[
+  {
+    "url": "http://imgcache.qq.com/qzone/biz/act/act.htm",
+    "status": "live",
+    "local": "demo/bundle/mirror/imgcache.qq.com/qzone/biz/act/act.htm",
+    "bytes": 2038,
+    "sha256": "d6cff783046af161"
+  },
+  {
+    "url": "http://imgcache.qq.com/qzone/fonts/font_fzcyj_14.swf",
+    "status": "live",
+    "local": "demo/bundle/mirror/imgcache.qq.com/qzone/fonts/font_fzcyj_14.swf",
+    "bytes": 11229,
+    "sha256": "1047d03aa24a3d70"
+  },
+  {
+    "url": "http://imgcache.qq.com/qzone/fonts/font_fzhcjt_14.swf",
+    "status": "live",
+    "local": "demo/bundle/mirror/imgcache.qq.com/qzone/fonts/font_fzhcjt_14.swf",
+    "bytes": 17388,
+    "sha256": "d03b23e61b8ffccf"
+  },
+  {
+    "url": "http://imgcache.qq.com/qzone/fonts/font_fzsrt_14.swf",
+    "status": "live",
+    "local": "demo/bundle/mirror/imgcache.qq.com/qzone/fonts/font_fzsrt_14.swf",
+    "bytes": 14420,
+    "sha256": "30a0afe37bf07b7d"
+  },
+  {
+    "url": "http://imgcache.qq.com/qzone/fonts/font_fztjlsjt_14.swf",
+    "status": "live",
+    "local": "demo/bundle/mirror/imgcache.qq.com/qzone/fonts/font_fztjlsjt_14.swf",
+    "bytes": 16255,
+    "sha256": "53b5c67f86632c47"
+  }
+]

@@ -1,0 +1,23 @@
+[project]
+name = "qzone-museum"
+version = "0.1.0"
+description = "Harvester + analyzer for a QQ空间装扮 museum / embeddable Flash widgets"
+readme = "README.md"
+requires-python = ">=3.11"
+# Core pipeline (harvest, download, analyze) is intentionally stdlib-only so it
+# runs anywhere with zero install. Optional extras live in dependency-groups.
+dependencies = [
+    "pillow>=12.2.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.6",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
