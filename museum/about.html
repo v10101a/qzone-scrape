@@ -1,3 +1,10 @@
+<!--
+  The prose on this page is GENERATED.
+  Edit museum/about.zh.md / museum/about.en.md, then run:
+      python3 pipeline/build_about.py
+  Only the parts outside the ABOUT:zh / ABOUT:en markers (head, topbar,
+  lang-toggle script) are hand-edited here.
+-->
 <!DOCTYPE html>
 <html lang="zh-CN">
 
@@ -12,6 +19,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap"
     rel="stylesheet">
+  <!-- 楷 prose font (霞鹜臻楷 LXGW ZhenKai GB) — same sliced webfont the blog/日志 uses -->
+  <link rel="stylesheet" href="https://fontsapi.zeoseven.com/2/main/result.css">
   <link rel="stylesheet" href="museum.css">
 </head>
 
@@ -32,48 +41,113 @@
 
   <main class="about-wrap">
     <div class="about-card">
-      <h2><span class="zh">关于</span><span class="en">About</span></h2>
-      <p class="lead zh">
-        这是一座关于 <strong>QQ空间装扮</strong> 的博物馆，收藏 2005 至 2009 年间的皮肤、挂件、
-        漂浮物、鼠标、标题栏与音乐播放器，共 5,863 件。
-      </p>
-      <p class="lead en">
-        A museum of <strong> QZone decorations</strong>, collecting the skins, pendants, floaties, cursors, title bars
-        and music players that Chinese teenagers used to dress up their homepages between 2005 and 2009, with a totle of
-        5,863 files.
-      </p>
-
-      <!-- <div class="about-stats">
-        <span class="lab"><span class="zh">藏品</span><span class="en">Items</span></span>
+      <!-- ABOUT:zh -->
+      <div class="zh">
+        <h2>关于</h2>
+        <p class="lead">这是一座关于 QQ 空间装扮的电子博物馆，挖掘并收藏 2005 至 2009 年间的 5,863 件装扮，包括皮肤、挂件、漂浮物、鼠标指针、标题栏与 Flash 音乐播放器。</p>
+        <p>QQ 空间是腾讯于 2005 年推出的个人主页平台，鼎盛时期月活跃用户超过六亿，是当时中国最大的社交网络。对一代人来说，它是人生中第一个自己的页面，Y2K 极繁主义和"非主流"在中文互联网的模样。</p>
+        <h2>互联网与记忆</h2>
+        <p>Adobe 在 2020 年底终结了 Flash，浏览器随之将其移除；QQ 秀于 2021 年下架；花藤在 2022 年停止运营；虽然 QQ 空间依然在线，装扮商城也已不复存在。</p>
+        <p>本项目收藏的所有素材都来自 <a href="https://web.archive.org/" target="_blank" rel="noopener">Internet Archive</a> 和腾讯仍在线的
+          CDN。</p>
+        <ul>
+          <li>项目的开始，我半信半疑地从 Internet Archive 时光机的 CDX 索引出发，寻找出所有曾被存档的装扮素材地址，并发现绝大多数素材在十五年后仍能以原始地址访问。</li>
+          <li>于是我优先从原始地址直接取回素材，少数失效的再从时光机恢复。物品的编号、中文名、上架日期、价格与色系标签，全部还原自 QQ 空间装扮商城的目录接口。</li>
+          <li>动画鼠标文件被逐帧解码为现代浏览器能播放的 APNG 格式，播放器与 Flash 挂件由 <a href="https://ruffle.rs/" target="_blank"
+              rel="noopener">Ruffle 模拟器</a>运行，漂浮物轨迹还原自 2006 年腾讯的前端代码。</li>
+        </ul>
+        <p>中文互联网很早就整体搬进了封闭平台，可时光机无法抓取需要账号才能看见的内容。QQ 空间里以文件形态存在的
+          GIF、皮肤、鼠标，都意外地活了下来；而在登录接口之后的数据，像用户的布局、花藤、留言板，却和服务器一起消失了。</p>
+        <h2>致谢</h2>
+        <p>本项目深受朋友 Kay Zeng 的 <a href="https://qqshow2000.com/" target="_blank" rel="noopener">qqshow2000.com</a>
+          影响。她用时光机里打捞的素材重现了 QQ 秀；这个网页也入驻了本站的 QQ 空间装扮页面。和 QQ 秀一样，QQ 空间塑造了数亿人对互联网最初的想象，却在中文互联网之外几乎无人知晓。我们希望这段历史能被更广阔的世界看见。
+        </p>
+        <p>同样对我影响很深的还有 Jordan Eldredge 的 <a href="https://webamp.org/" target="_blank" rel="noopener">Webamp</a> 与 <a
+            href="https://skins.webamp.org/" target="_blank" rel="noopener">Winamp Skin Museum</a>，通过重写复活了 Windows
+          桌面音乐软件。感谢艺术家朋友们的互联网数字档案工作，包括 Yufeng Zhao 和 Lewei Huang 的 <a href="https://banner-depot-2000.net/"
+            target="_blank" rel="noopener">BannerDepot 2000</a>，Amad Ansari 的 <a href="https://palestineonline.net/"
+            target="_blank" rel="noopener">Palestine Online</a>。</p>
+        <ul>
+          <li>QQ 空间博物馆由 <a href="https://viola.city/" target="_blank" rel="noopener">viola he</a> 在 claude code
+            的帮助下设计并制作。viola
+            最早接触到网页编程便是通过 QQ 空间和博客大巴。</li>
+          <li>本站字体：<a href="https://github.com/SolidZORO/zpix-pixel-font" target="_blank" rel="noopener">Zpix 最像素</a>，<a
+              href="https://github.com/lxgw/LxgwZhenKai" target="_blank" rel="noopener">霞鹜臻楷</a></li>
+          <li>本站素材：画出这 5,863 件像素画、大多不曾留名的腾讯设计师们。如果这里有你的作品，欢迎和我联系！</li>
+        </ul>
+        <h2>声明</h2>
+        <p class="fine">这是一个非官方、非营利的数字档案项目，仅用于艺术、教育与研究目的。所有素材均恢复自 Internet Archive 时光机与腾讯至今仍在线的
+          CDN，版权归腾讯控股有限公司所有。如需删除下架，请联系 viola@nyu.edu。</p>
+        <p class="about-go"><a class="go" href="index.html">← 浏览藏品</a><a class="go" href="../site/">装扮你的空间 →</a></p>
       </div>
-      <div class="stat"><span class="num">2005–09</span><span class="lab"><span class="zh">年代</span><span
-            class="en">Era</span></span></div>
-    </div> -->
-
-      <h2><span class="zh">致谢</span><span class="en">With thanks to</span></h2>
-      <ul>
-        <li>
-          <a href="https://web.archive.org/" target="_blank" rel="noopener">Internet Archive</a>
-        </li>
-        <li>
-          <a href="https://skins.webamp.org/" target="_blank" rel="noopener">Winamp Skin Museum</a>,
-          <a href="https://banner-depot-2000.net/" target="_blank" rel="noopener">BannerDepot 2000</a>,
-          <a href="https://qqshow2000.com/" target="_blank" rel="noopener">qqshow2000</a>
-        </li>
-        <li>
-          <a href="https://github.com/SolidZORO/zpix-pixel-font" target="_blank" rel="noopener">Zpix 最像素</a>
-        </li>
-        <li>
-          <span class="zh">腾讯</span>
-          <span class="en">Tencent</span>
-        </li>
-      </ul>
-
-      <h2><span class="zh">去逛逛</span><span class="en">Wander in</span></h2>
-      <p class="about-go">
-        <a class="go" href="index.html"><span class="zh">← 浏览藏品</span><span class="en">← Browse the archive</span></a>
-        <a class="go" href="../site/"><span class="zh">装扮你的空间 →</span><span class="en">Dress up a space →</span></a>
-      </p>
+      <!-- /ABOUT:zh -->
+      <!-- ABOUT:en -->
+      <div class="en">
+        <h2>About</h2>
+        <p class="lead">This is a digital archive of QZone (QQ空间) decorations, collecting 5,863 files from between
+          2005 and 2009, including skins, pendants, floaties, cursors, title bars and flash music players.</p>
+        <p>QZone is the personal-homepage platform Tencent launched in 2005. At its peak it had over 600 million
+          monthly active users, making it the largest social network in China at the time. For a generation it was the
+          first page
+          of their own, and what Y2K maximalism and "non-mainstream" looked like on the Chinese internet.</p>
+        <h2>On internet memory</h2>
+        <p>Adobe ended Flash at the close of 2020 and browsers removed it; QQShow was taken down in 2021; the
+          flower-vine garden stopped operating in 2022; though QZone itself technically still exists, its decoration
+          mall is
+          long gone.</p>
+        <p>Everything in this collection comes from the <a href="https://web.archive.org/" target="_blank"
+            rel="noopener">Internet Archive</a> and from Tencent's still-online CDNs.</p>
+        <ul>
+          <li>The project started from the Internet Archive Wayback Machine's CDX index, where I found out that most of
+            the decoration assets that were archived still answered at their
+            original addresses, fifteen years later.</li>
+          <li>So I fetched assets straight from their original URLs, then recovered the few dead ones from the Wayback
+            Machine. The item ids, Chinese names, release dates, prices and color tags were all crawled from the QZone
+            decoration mall's catalog API.</li>
+          <li>The animated cursor .ani files were decoded frame by frame into APNGs, the
+            music players Flash pendants ran in the <a href="https://ruffle.rs/" target="_blank" rel="noopener">Ruffle
+              emulator</a>, and the floaties' drifting paths were reconstructed according to Tencent's 2006 front-end
+            code.</li>
+        </ul>
+        <p>The Chinese web moved into closed platforms early and wholesale, and the Wayback Machine cannot crawl content
+          behind an account. The parts of QZone that survived were files like the GIFs, skins, and cursors; meanwhile,
+          the data that lived behind login endpoints — custom layouts, flower gardens, guestbooks — all disappeared
+          along with the servers.
+        </p>
+        <h2>Acknowledgements</h2>
+        <p>This project is deeply influenced by my friend Kay Zeng's <a href="https://qqshow2000.com/" target="_blank"
+            rel="noopener">qqshow2000.com</a>. She rebuilt QQShow from assets salvaged out of the Wayback Machine; her
+          site also lives inside this museum's QZone dress-up page. Like QQShow, QZone shaped how hundreds of millions
+          of people first imagined the internet, yet remains nearly unknown outside the Chinese-speaking web. We hope
+          this history can be seen by the wider world.</p>
+        <p>Equally formative were Jordan Eldredge's <a href="https://webamp.org/" target="_blank"
+            rel="noopener">Webamp</a> and <a href="https://skins.webamp.org/" target="_blank" rel="noopener">Winamp Skin
+            Museum</a>, which brought the Windows desktop music player back to life by rewriting it in JavaScript. And
+          thank you to
+          artist friends doing internet digital-archive work, including Yufeng Zhao and Lewei Huang's <a
+            href="https://banner-depot-2000.net/" target="_blank" rel="noopener">BannerDepot 2000</a> and Amad Ansari's
+          <a href="https://palestineonline.net/" target="_blank" rel="noopener">Palestine Online</a>.
+        </p>
+        <ul>
+          <li>The QZone Museum is designed and built by <a href="https://viola.city/" target="_blank"
+              rel="noopener">viola he</a> with the help of claude code, who first learned html through QZone and
+            blogbus.
+          </li>
+          <li>Typefaces: <a href="https://github.com/SolidZORO/zpix-pixel-font" target="_blank" rel="noopener">Zpix</a>,
+            <a href="https://github.com/lxgw/LxgwZhenKai" target="_blank" rel="noopener">LXGW ZhenKai</a>
+          </li>
+          <li>Artwork: the mostly unnamed Tencent designers who drew these 5,863 pixel pieces. If your work is here, I'd
+            love to hear from you!</li>
+        </ul>
+        <h2>Disclaimer</h2>
+        <p class="fine">This is an unofficial, non-profit digital archive, for artistic, educational and research
+          purposes only. All assets were recovered from the Internet Archive's Wayback Machine and from Tencent's
+          still-live CDNs; copyright belongs to Tencent Holdings Ltd. For takedown requests, please get in touch:
+          viola@nyu.edu.</p>
+        <p class="about-go"><a class="go" href="index.html">← Browse the archive</a><a class="go" href="../site/">Dress
+            up a space →</a></p>
+      </div>
+      <!-- /ABOUT:en -->
     </div>
   </main>
 

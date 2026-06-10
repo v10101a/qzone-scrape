@@ -30,13 +30,16 @@
     </div>
     <nav class="filters">
       <div class="toolrow">
-        <div class="facet types" id="f-type"></div>
         <div class="search">
           <input id="q" type="search" placeholder="按名称或编号搜索…" autocomplete="off">
           <button id="random" title="随机 / surprise me">🎲</button>
         </div>
+        <button id="filterToggle" class="filter-toggle" type="button" aria-expanded="false" aria-controls="facetExtra">
+          <span id="filterLbl">筛选</span><span class="ft-caret" aria-hidden="true">⌄</span>
+        </button>
+        <div class="facet types" id="f-type"></div>
       </div>
-      <div class="facet-row">
+      <div class="facet-row" id="facetExtra">
         <div class="facet hues" id="f-hue"></div>
         <div class="facet years" id="f-year"></div>
         <div class="facet sort">

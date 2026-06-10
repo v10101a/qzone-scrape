@@ -194,7 +194,8 @@ body::before {
 /* glossy gel controls (header + filters), pixel-faced */
 #random,
 .chip,
-.sort button {
+.sort button,
+.filter-toggle {
   font-family: var(--disp);
   font-weight: 400;
   letter-spacing: var(--px);
@@ -211,13 +212,15 @@ body::before {
 
 #random:hover,
 .chip:hover,
-.sort button:hover {
+.sort button:hover,
+.filter-toggle:hover {
   transform: translateY(-1px);
   box-shadow: inset 0 1px 0 #fff, 0 4px 12px var(--shadow), 0 0 0 2px rgba(110, 175, 250, .34);
 }
 
 .chip.on,
-.sort button.on {
+.sort button.on,
+.filter-toggle.on {
   color: #fff;
   border-color: rgba(255, 255, 255, .9);
   background:
@@ -265,11 +268,32 @@ body::before {
 .toolrow .types {
   flex: 1 1 auto;
   margin-bottom: 0;
+  order: -1;
+  /* keep type tabs on the left of the row (search/toggle come first in DOM) */
 }
 
 .toolrow .search {
   margin-left: auto;
   flex: 0 0 auto;
+}
+
+/* filter drawer toggle — mobile only (hidden on desktop) */
+.filter-toggle {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+}
+
+.filter-toggle .ft-caret {
+  font-size: 11px;
+  line-height: 1;
+  transition: transform .2s ease;
+}
+
+.filter-toggle[aria-expanded="true"] .ft-caret {
+  transform: rotate(180deg);
 }
 
 .facet {
@@ -836,23 +860,41 @@ body::before {
   margin: 26px 0 10px;
 }
 
-.about-card h2:first-child {
+.about-card h2:first-child,
+.about-card .zh>h2:first-child,
+.about-card .en>h2:first-child {
   margin-top: 0;
 }
 
 .about-card p,
 .about-card li {
-  font: 400 14.5px/1.7 var(--body);
+  /* 楷 prose, same voice as the 日志 body on the dress-up page */
+  font: 400 16px/1.95 "LXGW ZhenKai GB", "Kaiti SC", "KaiTi", "楷体", Georgia, serif;
   color: #2a4a72;
 }
 
+/* inline links as little gel pills */
 .about-card a {
   color: var(--aqua-deep);
+  text-decoration: none;
+  padding: 0 8px 1px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .9), rgba(186, 214, 248, .55));
+  border: 1px solid var(--edge);
+  box-shadow: inset 0 1px 0 #fff, 0 1px 3px var(--shadow);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  transition: box-shadow .15s, background .15s;
 }
 
-.about-card .lead {
-  font-size: 16px;
+.about-card a:hover {
+  background: linear-gradient(180deg, #fff, rgba(170, 205, 248, .78));
+  box-shadow: inset 0 1px 0 #fff, 0 2px 8px var(--aqua-glow), 0 0 0 2px rgba(110, 175, 250, .3);
 }
+
+/* .about-card .lead {
+  font-size: 18.5px;
+} */
 
 .about-stats {
   display: flex;
@@ -889,22 +931,156 @@ body::before {
 
 /* ---------- responsive ---------- */
 @media (max-width: 640px) {
+  .detail {
+    padding: 12px;
+  }
+
   .detail-card {
     flex-direction: column;
+    max-height: 92vh;
+  }
+
+  .detail-stage {
+    padding: 18px;
+  }
+
+  .detail-stage img {
+    max-height: 42vh;
   }
 
   .detail-meta {
     flex: auto;
+    padding: 20px 22px;
     border-left: none;
     border-top: 1px solid rgba(255, 255, 255, .55);
   }
 
-  .search input {
-    width: 50vw;
+  /* tighter header so the grid gets the screen */
+  .topbar .gradient {
+    gap: 8px;
+    padding: 9px 14px 6px;
   }
 
-  .topbar .gradient {
+  .brand h1 {
+    font-size: 18px;
+  }
+
+  .topnav {
+    gap: 5px;
+  }
+
+  .topnav a,
+  .topnav button {
+    padding: 7px 11px;
+    font-size: 12.5px;
+  }
+
+  .filters {
+    padding: 4px 14px 11px;
+  }
+
+  /* row 1: search + Filters toggle; type tabs become a horizontal scroll strip */
+  .toolrow {
+    gap: 8px;
+  }
+
+  .toolrow .search {
+    order: 1;
+    margin-left: 0;
+    flex: 1 1 auto;
+    min-width: 130px;
+    max-width: 240px;
+  }
+
+  .toolrow .search input {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .filter-toggle {
+    display: inline-flex;
+    order: 1;
+    flex: 0 0 auto;
+    margin-left: auto;
+    /* hug the right edge so the search bar stays compact */
+  }
+
+  /* the "色 / Color" label is redundant next to the swatches on mobile */
+  .hues .lbl {
+    display: none;
+  }
+
+  .toolrow .types {
+    order: 2;
+    flex: 1 1 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+    margin: 2px -14px 0;
+    padding-left: 14px;
+    padding-right: 14px;
+    /* bleed to screen edges so chips can scroll fully */
+  }
+
+  .toolrow .types::-webkit-scrollbar {
+    display: none;
+  }
+
+  .toolrow .types .chip {
+    flex: 0 0 auto;
+  }
+
+  /* fade the edge(s) that have more chips hidden off-screen — a hint to swipe */
+  .toolrow .types.fade-r {
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 30px), transparent);
+    mask-image: linear-gradient(90deg, #000 calc(100% - 30px), transparent);
+  }
+
+  .toolrow .types.fade-l {
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 30px);
+    mask-image: linear-gradient(90deg, transparent, #000 30px);
+  }
+
+  .toolrow .types.fade-l.fade-r {
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 30px, #000 calc(100% - 30px), transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 30px, #000 calc(100% - 30px), transparent);
+  }
+
+  /* secondary facets collapse behind the toggle */
+  #facetExtra {
+    display: none;
+    margin-top: 12px;
+  }
+
+  #facetExtra.open {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  #facetExtra .sort {
+    margin-left: 0;
+    flex-wrap: wrap;
+  }
+
+  /* denser grid, less edge padding */
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
     gap: 10px;
+    padding: 14px 14px 70px;
+  }
+
+  /* smoother scrolling: drop fixed/animated background repaints on mobile */
+  body {
+    background-attachment: scroll;
+  }
+
+  body::before {
+    animation: none;
+    filter: blur(4px);
   }
 }
 
@@ -948,6 +1124,11 @@ body::before {
 .about-go .go:hover {
   transform: translateY(-1px);
   box-shadow: inset 0 1px 0 #fff, 0 4px 12px var(--aqua-glow);
+}
+
+.about-card .fine {
+  font-size: 12.5px;
+  color: var(--muted);
 }
 
 /* about-page language toggle: show only the active language */

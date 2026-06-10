@@ -8,7 +8,7 @@ const I18N = {
   zh: {
     brand: 'QQ空间博物馆', sub: n => `2005–2009 · 共 ${n} 件藏品`,
     search: '按名称或编号搜索…', all: '全部', color: '色', byDate: '按年代', shuffle: '乱序',
-    animOnly: '仅动图', empty: '没有匹配的藏品', langBtn: 'EN',
+    animOnly: '仅动图', empty: '没有匹配的藏品', langBtn: 'EN', filters: '筛选',
     f_type: '类型', f_color: '色系', f_year: '年代', f_search: '搜索',
     d_era: '年代', d_color: '色系', d_size: '尺寸', d_price: '原价', d_animated: '动画',
     d_tags: '标签', d_yes: '是', price: p => `${p} <img class="hz" src="assets/huangzuan_plain.png" alt="黄钻">`, viewSrc: '查看原始素材 ↗',
@@ -18,7 +18,7 @@ const I18N = {
   en: {
     brand: 'QZone Museum', sub: n => `2005–2009 · ${n} items`,
     search: 'Search by name or ID…', all: 'All', color: 'Color', byDate: 'By date', shuffle: 'Shuffle',
-    animOnly: 'Animated', empty: 'No items match these filters', langBtn: '中',
+    animOnly: 'Animated', empty: 'No items match these filters', langBtn: '中', filters: 'Filters',
     f_type: 'Type', f_color: 'Color', f_year: 'Year', f_search: 'Search',
     d_era: 'Era', d_color: 'Color', d_size: 'Size', d_price: 'Price', d_animated: 'Animated',
     d_tags: 'Tags', d_yes: 'Yes', price: p => `${p} <img class="hz" src="assets/huangzuan_plain.png" alt="Yellow Diamond">`, viewSrc: 'View original ↗',
@@ -106,6 +106,16 @@ function buildFacets() {
   const fy = document.getElementById('f-year'); fy.innerHTML = '';
   for (const y of Object.keys(yearCounts).sort())
     fy.appendChild(chip(y, yearCounts[y], state.year === y, () => { state.year = state.year === y ? null : y; refresh(); }));
+
+  updateTypeFade();
+}
+
+// fade the type strip's edge(s) when chips overflow off-screen (mobile swipe hint)
+function updateTypeFade() {
+  const el = document.getElementById('f-type'); if (!el) return;
+  const max = el.scrollWidth - el.clientWidth;
+  el.classList.toggle('fade-r', el.scrollLeft < max - 1);
+  el.classList.toggle('fade-l', el.scrollLeft > 1);
 }
 
 let rndSeed = 1;
@@ -157,6 +167,9 @@ function refresh() {
   tchips.forEach((c, i) => c.classList.toggle('on', types[i] === state.type));
   document.querySelectorAll('#f-hue .sw').forEach(s => s.classList.toggle('on', s.dataset.hue === state.hue));
   document.querySelectorAll('#f-year .chip').forEach(c => c.classList.toggle('on', c.textContent.trim().startsWith(state.year || '\0')));
+
+  const ft = document.getElementById('filterToggle');
+  if (ft) ft.classList.toggle('on', !!(state.hue || state.year || state.animOnly || state.sort === 'rnd'));
 
   filtered = applyFilters(); grid.innerHTML = ''; shown = 0; renderBatch();
   setTxt('sub', L().sub(filtered.length.toLocaleString()));
@@ -210,10 +223,10 @@ function openDetail(r) {
     navigator.clipboard?.writeText(String(r.id)); copy.textContent = L().copied;
     setTimeout(() => copy.textContent = L().copyId, 1200);
   };
-  detail.hidden = false; location.hash = 'item-' + r.id;
+  detail.hidden = false; document.body.style.overflow = 'hidden'; location.hash = 'item-' + r.id;
 }
 function closeDetail() {
-  curItem = null; detail.hidden = true;
+  curItem = null; detail.hidden = true; document.body.style.overflow = '';
   if (location.hash.startsWith('#item-')) history.replaceState(null, '', location.pathname);
 }
 detail.querySelectorAll('[data-close]').forEach(e => e.onclick = closeDetail);
@@ -226,6 +239,7 @@ function applyLang() {
   const qEl = document.getElementById('q'); if (qEl) qEl.placeholder = L().search;
   setTxt('lang', L().langBtn);
   setTxt('animLbl', L().animOnly);
+  setTxt('filterLbl', L().filters);
   setTxt('nav-archive', L().nav_archive);
   setTxt('nav-qzone', L().nav_qzone);
   setTxt('nav-about', L().nav_about);
@@ -253,6 +267,14 @@ document.querySelectorAll('.sort button[data-sort]').forEach(b => {
   };
 });
 document.getElementById('animOnly').onchange = e => { state.animOnly = e.target.checked; refresh(); };
+const filterToggle = document.getElementById('filterToggle');
+if (filterToggle) filterToggle.onclick = () => {
+  const open = document.getElementById('facetExtra').classList.toggle('open');
+  filterToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+};
+document.getElementById('f-type').addEventListener('scroll', updateTypeFade, { passive: true });
+window.addEventListener('resize', updateTypeFade);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(updateTypeFade);
 new IntersectionObserver(es => { if (es[0].isIntersecting && shown < filtered.length) renderBatch(); },
   { rootMargin: '700px' }).observe(document.getElementById('sentinel'));
 

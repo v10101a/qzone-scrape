@@ -2,6 +2,8 @@
 
 Tooling to scrape archived Flash + asset files for a **QQ空间装扮 museum**, in the spirit of the Winamp Skin Museum / Webamp.
 
+[link to preview](https://v10101a.github.io/web-scrape/museum/)
+
 ## Project layout
 
 ```
