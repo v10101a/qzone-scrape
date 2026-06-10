@@ -1,22 +1,38 @@
-# QZone / QQShow preservation harvester
+# QZone preservation harvester
 
-Tooling to scrape archived Flash + asset files for a **QQ空间装扮 museum** (and
-sister 4399 / QQShow archives), in the spirit of the Winamp Skin Museum / Webamp.
+Tooling to scrape archived Flash + asset files for a **QQ空间装扮 museum**, in the spirit of the Winamp Skin Museum / Webamp.
 
 ## Project layout
 
 ```
 pipeline/    harvesting + processing scripts (stdlib-only, resumable)
 data/        manifests, catalogs, downloaded asset working set
-library/     the curated asset archive served by the site (skins, players, cursors, …)
-site/        the museum web app  →  open site/index.html
-qq-player-poc/  separate effort: a Webamp-style JS reimplementation of the QQ player
-archive/     dev screenshots + old prototypes, kept out of the way
+library/     the curated asset archive served by the site
+site/        the demo web app
+museum/      new!!! web archive that displays assets
+qq-player-poc/  a Webamp-style JS reimplementation of the QQ player (WIP)
 ```
 
-Run the museum: serve the repo and open `site/index.html` (e.g. VS Code Live
-Server, or `python3 -m http.server` then visit `/site/`). HTTP is required (the
-service worker that mirrors Tencent CDN deps only runs over http).
+Both `museum/` and `site/` are web surfaces over one dataset. Serve the repo root
+(`python3 -m http.server`) and visit `/museum/` or `/site/` (http required).
+
+## The catalog (`data/catalog.json` → baked into `museum/catalog.js`)
+
+One normalized record per item — the single source of truth the museum reads:
+`id, type, name (中文), date, era, price, color (#hex), hue, animated, w/h,
+tone/audience/mood/themes (from Tencent's Fitem_tag + categories), cats, src
+(live CDN url), thumb`. Rebuilt by three pipeline steps:
+
+```bash
+python3 pipeline/harvest_catalog_full.py   # mall itemlist JSON → data/catalogs/catalog_meta.jsonl
+                                           #   (full records: name, upload date, tags) for the types we hold
+python3 pipeline/extract_colors.py         # Pillow → dominant hex + hue bucket + animated flag, per asset
+python3 pipeline/build_manifest.py         # join disk assets + metadata + colors → catalog.json + museum/catalog.js
+```
+
+Coverage of the 5,992 on-disk items: **98% real names, 95% colors, ~100%
+thumbnails**, spanning 2005–2009. Tencent's theme/mood tags are dense on ~2009
+items, sparse on 2005–2007 (which still carry name + date + color).
 
 ## Harvesting pipeline
 
@@ -68,22 +84,3 @@ data/
   assets/<host>/<path>...   # downloaded files, query-string variants get __q<hash> suffix
   fetched.jsonl     # download log: source (live|wayback|cached|failed), sha256, bytes, valid_swf
 ```
-
-## Notes
-
-- **Live-first is a feature.** Tencent/4399 rarely purge old CDN files, so most assets come straight from origin at full fidelity. `--wayback-only` forces the archive path if origin is gone or you want the historical byte-exact version.
-- **`valid_swf:BAD`** in the log = the bytes weren't a real SWF (often an HTML
-  error page saved with a `.swf` name). Filter these out before processing.
-- **Be polite.** Defaults are 4 workers + small delays. Wayback throttles hard; don't crank `--workers` high or you'll get rate-limited (429).
-- **Login-walled content is unreachable.** Personal QZone profile pages were
-  behind login → never crawled. We recover the *asset library*, not assembled
-  personal pages.
-
-## Status
-
-Built: harvesting + download pipeline, SWF triage (`pipeline/analyze.py`), the
-Ruffle render harness (`ruffle-harness/`), and the museum frontend (`site/` —
-grid + search + live dress-up preview).
-
-In progress: `qq-player-poc/` — a Webamp-style JS reimplementation of the QQ
-music player that still renders the original Flash skins (see its README).

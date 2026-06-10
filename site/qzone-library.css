@@ -92,20 +92,6 @@ body.custom-cursor #stageWrap * {
   padding-top: 10px;
 }
 
-.columns {
-  justify-content: flex-start;
-  /* spacing above content is owned by .nav (margin-bottom) + .page-header */
-}
-
-.topbar {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin: 0 0 14px 4px;
-}
-
-
-
 .who {
   position: relative;
   /* z-index only takes effect on a POSITIONED element — without this the absolute
@@ -118,13 +104,6 @@ body.custom-cursor #stageWrap * {
   color: var(--c-nick, #fff);
   /* page title takes the 配色 nickname color */
   text-shadow: 0 2px 6px var(--c-tabbg, #5555553c);
-}
-
-.who .sign {
-  font-family: "Ma Shan Zheng", cursive;
-  font-size: 15px;
-  color: #fff;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, .5);
 }
 
 /* QZone v5 nav: a horizontal strip of square ~25px tabs sitting ON a baseline border
@@ -198,10 +177,11 @@ body.custom-cursor #stageWrap * {
 
 .columns {
   display: flex;
+  justify-content: flex-start;
   gap: 12px;
   align-items: flex-start;
   padding-top: 14px;
-  /* small breathing room under the nav-line / banner, without disconnecting */
+  /* small breathing room under the nav-line / banner; spacing above is owned by .nav margin + .page-header */
 }
 
 /* two columns filling the 980 content */
@@ -376,13 +356,6 @@ body.view-only .hd-gen {
   color: #1559cf;
 }
 
-/* 火星文 toggle, active */
-.qqshow-edit-btn.on {
-  background: linear-gradient(#ffe9a8, #f4c84e);
-  border-color: #d8a93a;
-  color: #7a5800;
-}
-
 /* share toast + "remix this space" banner (both float above everything) */
 #toast {
   position: fixed;
@@ -451,24 +424,6 @@ body:not(.view-only) .qqshow-name[contenteditable="true"] {
   /* clip the qqshow2000 top header bar */
   pointer-events: none;
   /* clicks fall through to the card link */
-}
-
-.qqshow-label {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  font-size: 11px;
-  text-align: center;
-  color: #fff;
-  background: rgba(0, 0, 0, .55);
-  padding: 3px;
-  opacity: 0;
-  transition: opacity .15s;
-}
-
-.qqshow-card:hover .qqshow-label {
-  opacity: 1;
 }
 
 /* QZone-style control strip (top-right), modeled on the real 显示导航|装扮空间|自定义 bar:
@@ -574,10 +529,6 @@ body.view-only #clearBtn {
   color: #ffffff;
 }
 
-.deco .ph button[data-fs] {
-  background: #3949ab;
-}
-
 /* view-only: hide all editing chrome, no grab cursor */
 body.view-only .deco .ph {
   display: none;
@@ -585,10 +536,6 @@ body.view-only .deco .ph {
 
 body.view-only .deco {
   cursor: default;
-}
-
-.deco.fullscreen {
-  z-index: 4;
 }
 
 .swfdeco {
@@ -936,10 +883,6 @@ body.view-only .music-pop {
 
 .grid.c4 {
   grid-template-columns: repeat(4, 1fr);
-}
-
-.grid.c5 {
-  grid-template-columns: repeat(5, 1fr);
 }
 
 .grid.c6 {

@@ -68,37 +68,47 @@ def analyze(path: Path, force_anim=False):
     except Exception:  # noqa: BLE001
         return None
 
+    # Lower the saturation bar so pastels/light-but-colorful items count as a
+    # real hue instead of falling into "white". white/gray/black is a LAST resort
+    # (only when an item has essentially no chromatic pixels).
     chroma = defaultdict(list)   # hue_name -> [(r,g,b), ...]
     neutral = []                 # value of low-sat opaque pixels
     for r, g, b, a in px:
-        if a < 180:
+        if a < 160:
             continue
         hh, ss, vv = colorsys.rgb_to_hsv(r / 255, g / 255, b / 255)
-        if ss >= 0.22 and 0.18 <= vv <= 0.97:
+        if ss >= 0.14 and 0.12 <= vv <= 0.98:
             chroma[hue_name(hh * 360)].append((r, g, b))
         else:
             neutral.append(vv)
 
     total_op = sum(len(v) for v in chroma.values()) + len(neutral)
     if total_op == 0:
-        return {"color": "#000000", "hue": "black", "animated": animated, "w": w, "h": h}
+        return {"color": "#000000", "hues": [], "neutral": "black",
+                "animated": animated, "w": w, "h": h}
 
     chroma_count = sum(len(v) for v in chroma.values())
-    if chroma_count >= 0.18 * total_op and chroma:
-        hue, pts = max(chroma.items(), key=lambda kv: len(kv[1]))
-        n = len(pts)
-        avg = tuple(round(sum(c[i] for c in pts) / n) for i in range(3))
+    hues, color = [], ""
+    if chroma_count >= 0.06 * total_op and chroma:
+        # every hue bin holding >=18% of the chromatic pixels is a "present" color
+        ranked = sorted(chroma.items(), key=lambda kv: len(kv[1]), reverse=True)
+        for name, pts in ranked:
+            if len(pts) >= 0.18 * chroma_count and len(hues) < 3:
+                hues.append(name)
+        if not hues:
+            hues = [ranked[0][0]]
+        top = dict(chroma)[hues[0]]
+        avg = tuple(round(sum(c[i] for c in top) / len(top)) for i in range(3))
         color = "#%02x%02x%02x" % avg
-    else:
-        v = sum(neutral) / len(neutral) if neutral else 0
-        if v < 0.22:
-            hue, g = "black", round(v * 255)
-        elif v > 0.82:
-            hue, g = "white", round(v * 255)
-        else:
-            hue, g = "gray", round(v * 255)
+
+    # neutral classification (used as fallback when no chromatic hue)
+    v = sum(neutral) / len(neutral) if neutral else 0
+    neutral_name = "black" if v < 0.25 else "white" if v > 0.80 else "gray"
+    if not color:
+        g = round(v * 255)
         color = "#%02x%02x%02x" % (g, g, g)
-    return {"color": color, "hue": hue, "animated": animated, "w": w, "h": h}
+    return {"color": color, "hues": hues, "neutral": neutral_name,
+            "animated": animated, "w": w, "h": h}
 
 
 def main():

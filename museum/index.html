@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QQ空间装扮博物馆 · QZone Decoration Museum</title>
+  <link rel="stylesheet" href="museum.css">
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <h1 id="brand">QQ空间装扮博物馆</h1>
+    </div>
+    <div class="search">
+      <input id="q" type="search" placeholder="按名称或编号搜索…" autocomplete="off">
+      <button id="random" title="随机 / surprise me">🎲</button>
+      <button id="lang">EN</button>
+    </div>
+  </header>
+
+  <nav class="filters">
+    <div class="facet types" id="f-type"></div>
+    <div class="facet-row">
+      <div class="facet hues" id="f-hue"></div>
+      <div class="facet years" id="f-year"></div>
+      <div class="facet sort">
+        <button data-sort="date" class="on">按年代</button>
+        <button data-sort="rnd">乱序</button>
+        <label class="anim"><input type="checkbox" id="animOnly"> <span id="animLbl">仅动图</span></label>
+      </div>
+    </div>
+    <div class="active-bar" id="active"></div>
+  </nav>
+
+  <main id="grid" class="grid"></main>
+  <div id="sentinel"></div>
+  <p id="empty" class="empty" hidden>没有匹配的藏品 · no items match these filters</p>
+
+  <!-- detail overlay -->
+  <div id="detail" class="detail" hidden>
+    <div class="detail-scrim" data-close></div>
+    <div class="detail-card">
+      <button class="detail-x" data-close>✕</button>
+      <div class="detail-stage"><img id="d-img" alt=""></div>
+      <div class="detail-meta">
+        <h2 id="d-name"></h2>
+        <p id="d-sub" class="d-sub"></p>
+        <dl id="d-dl"></dl>
+        <div class="d-actions">
+          <a id="d-src" target="_blank" rel="noopener">查看原始素材 ↗</a>
+          <button id="d-copy">复制编号</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="catalog.js"></script>
+  <script src="museum.js"></script>
+</body>
+
+</html>

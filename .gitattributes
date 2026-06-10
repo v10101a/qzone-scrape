@@ -1,0 +1,11 @@
+# Recovered Tencent CSS/JS/assets 
+site/assets/recovered/**     linguist-vendored
+site/assets/bundle/mirror/** linguist-vendored
+library/**                   linguist-vendored
+archive/**                   linguist-vendored
+data/**                      linguist-vendored
+
+# Generated data bundles
+site/library_index.js        linguist-generated
+site/shuoshuo_data.js        linguist-generated
+site/catalog.js              linguist-generated
