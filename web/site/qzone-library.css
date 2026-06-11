@@ -211,7 +211,9 @@ body::before {
   position: relative;
   flex: 0 1 auto;
   min-height: 0;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
   background: #dde6ec;
 }
 
@@ -220,7 +222,7 @@ body::before {
    and market sit outside #stageWrap, so they keep their normal cursor. */
 body.custom-cursor #stageWrap,
 body.custom-cursor #stageWrap * {
-  cursor: none !important;
+  cursor: url("../assets/blank.png") 0 0, none !important;
 }
 
 #skinBg {
@@ -1428,6 +1430,11 @@ body.view-only .music-pop {
    (fitPage floors it at fill-height) and PANS horizontally inside the well instead
    of shrinking the whole 1280 to fit. The market becomes a full-width sheet. ── */
 @media (max-width: 640px) {
+
+  #stageWrap {
+    overflow-x: auto;
+  }
+
   .topbar .gradient {
     padding: 8px 12px;
     gap: 8px;
@@ -1487,5 +1494,64 @@ body.view-only .music-pop {
 
   .viewer-tools button {
     padding: 6px 9px;
+  }
+}
+
+/* ---------- frutiger aero scrollbars (same recipe as museum.css — keep in sync) ---------- */
+::-webkit-scrollbar {
+  width: 13px;
+  height: 13px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(228, 240, 253, .55);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .55), inset 0 0 6px rgba(60, 120, 175, .28);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 7px;
+  border: 2px solid rgba(255, 255, 255, .9);
+  box-shadow: inset 0 0 2px rgba(255, 255, 255, .85);
+  min-height: 36px;
+  min-width: 36px;
+}
+
+::-webkit-scrollbar-thumb:vertical {
+  background: linear-gradient(90deg, rgba(255, 255, 255, .95) 0%, rgba(186, 215, 250, .95) 46%, rgba(150, 195, 247, .95) 54%, rgba(120, 172, 240, .95) 100%);
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .95) 0%, rgba(186, 215, 250, .95) 46%, rgba(150, 195, 247, .95) 54%, rgba(120, 172, 240, .95) 100%);
+}
+
+::-webkit-scrollbar-thumb:vertical:hover,
+::-webkit-scrollbar-thumb:vertical:active {
+  background: linear-gradient(90deg, rgba(255, 255, 255, .85) 0%, rgba(110, 175, 250, .95) 46%, rgba(45, 130, 235, .97) 54%, rgba(16, 90, 205, 1) 100%);
+}
+
+::-webkit-scrollbar-thumb:horizontal:hover,
+::-webkit-scrollbar-thumb:horizontal:active {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .85) 0%, rgba(110, 175, 250, .95) 46%, rgba(45, 130, 235, .97) 54%, rgba(16, 90, 205, 1) 100%);
+}
+
+::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:active {
+  border-color: #fff;
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Firefox fallback — must stay scoped: scrollbar-color disables ::-webkit-scrollbar in Chromium */
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-color: #8ab2ef rgba(228, 240, 253, .7);
   }
 }

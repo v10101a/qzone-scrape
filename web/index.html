@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="museum.css">
 </head>
 
-<body>
+<body class="museum">
   <header class="topbar">
     <div class="gradient">
       <div class="brand">
@@ -52,9 +52,11 @@
     </nav>
   </header>
 
-  <main id="grid" class="grid"></main>
-  <div id="sentinel"></div>
-  <p id="empty" class="empty" hidden>没有匹配的藏品 · no items match these filters</p>
+  <div id="scrollzone" class="scrollzone">
+    <main id="grid" class="grid"></main>
+    <div id="sentinel"></div>
+    <p id="empty" class="empty" hidden>没有匹配的藏品 · no items match these filters</p>
+  </div>
 
   <!-- detail overlay -->
   <div id="detail" class="detail" hidden>
@@ -78,6 +80,7 @@
 
   <script src="catalog.js"></script>
   <script src="museum.js"></script>
+  <script src="cursor.js"></script>
 </body>
 
 </html>

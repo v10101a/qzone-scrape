@@ -283,7 +283,7 @@ document.getElementById('f-type').addEventListener('scroll', updateTypeFade, { p
 window.addEventListener('resize', updateTypeFade);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(updateTypeFade);
 new IntersectionObserver(es => { if (es[0].isIntersecting && shown < filtered.length) renderBatch(); },
-  { rootMargin: '700px' }).observe(document.getElementById('sentinel'));
+  { root: document.getElementById('scrollzone'), rootMargin: '700px' }).observe(document.getElementById('sentinel'));
 
 applyLang();
 if (location.hash.startsWith('#item-')) {

@@ -431,9 +431,15 @@ function setFollowerCursor(id) {
 document.addEventListener('pointermove', e => {
   const f = $('#followCursor'); if (!f) return;
   f.style.left = (e.clientX - HOT[0]) + 'px'; f.style.top = (e.clientY - HOT[1]) + 'px';
-  const onChrome = e.target && e.target.closest && e.target.closest('.toolbar, .market');
-  f.style.display = onChrome ? 'none' : 'block';
+  // the cursor decoration belongs to YOUR page — it only appears while the pointer
+  // is inside the 空间 itself (#stageWrap, where the native cursor is suppressed);
+  // everywhere else (toolbar, market, the sky around the window) stays native
+  const onPage = e.target && e.target.closest && e.target.closest('#stageWrap');
+  f.style.display = onPage ? 'block' : 'none';
 }, true);
+document.documentElement.addEventListener('mouseleave', () => {
+  const f = $('#followCursor'); if (f) f.style.display = 'none';
+});
 
 
 function setMarket(open) {

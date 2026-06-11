@@ -62,6 +62,13 @@ COLOR_TAG = {"红色": "red", "橙色": "orange", "黄色": "yellow", "绿色": 
              "青色": "cyan", "蓝色": "blue", "紫色": "purple", "粉色": "pink",
              "黑色": "black", "白色": "white"}
 
+# hand-curated hue corrections — wins over pixel analysis AND Tencent tags
+HUE_OVERRIDES = {
+    ("cursor", "653"): ["gray", "white"],   # 可爱鼠 — gray/white mouse, red stick fooled the matte rescue
+    ("cursor", "656"): ["black"],           # 小猪 — black outfit
+    ("floaty", "658"): ["black"],           # 蝙蝠 — black bat
+}
+
 # bucket id -> our museum type (mirrors the library/ dir layout)
 TYPE_DIRS = ["skin", "pendant", "floaty", "cursor", "titlebar", "player"]
 
@@ -118,7 +125,7 @@ def thumb_path(typ, iid):
 
 def disk_ids():
     """type -> set(id) for everything we actually have an asset for."""
-    ids = {t: set() for t in TYPE_DIRS + ["swf"]}
+    ids = {t: set() for t in TYPE_DIRS}
     for p in (LIB / "skin").glob("*_top.*"):
         ids["skin"].add(p.name.split("_")[0])
     for p in (LIB / "skin").glob("*_bg.*"):
@@ -134,8 +141,8 @@ def disk_ids():
             ids["titlebar"].add(p.stem)
     for p in (LIB / "player").glob("*.swf"):
         ids["player"].add(p.stem)
-    for p in (LIB / "swf").glob("*.swf"):
-        ids["swf"].add(p.stem)
+    # swf 挂件 excluded from the museum: previews need data/screenshots (not
+    # deployed) and the 12 items don't fit the collection
     return ids
 
 
@@ -192,6 +199,8 @@ def main():
                         hues.append(h)
             if not hues and c.get("neutral"):
                 hues = [c["neutral"]]
+            if (typ, iid) in HUE_OVERRIDES:
+                hues = list(HUE_OVERRIDES[(typ, iid)])
 
             rec = {
                 "id": iid,

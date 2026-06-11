@@ -1,10 +1,3 @@
-<!--
-  The prose on this page is GENERATED.
-  Edit web/about.zh.md / web/about.en.md, then run:
-      python3 pipeline/build_about.py
-  Only the parts outside the ABOUT:zh / ABOUT:en markers (head, topbar,
-  lang-toggle script) are hand-edited here.
--->
 <!DOCTYPE html>
 <html lang="zh-CN">
 
@@ -41,10 +34,9 @@
 
   <main class="about-wrap">
     <div class="about-card">
-      <!-- ABOUT:zh -->
       <div class="zh">
         <h2>关于</h2>
-        <p class="lead">这是一座关于 QQ 空间装扮的电子博物馆，挖掘并收藏 2005 至 2009 年间的 5,863 件装扮，包括皮肤、挂件、漂浮物、鼠标指针、标题栏与 Flash 音乐播放器。</p>
+        <p class="lead">这是一座关于 QQ 空间装扮的电子博物馆，挖掘并收藏 2005 至 2009 年间的 5,851 件装扮，包括皮肤、挂件、漂浮物、鼠标指针、标题栏与 Flash 音乐播放器。</p>
         <p>QQ 空间是腾讯于 2005 年推出的个人主页平台，鼎盛时期月活跃用户超过六亿，是当时中国最大的社交网络。对一代人来说，它是人生中第一个自己的页面，Y2K 极繁主义和"非主流"在中文互联网的模样。</p>
         <p>本项目由 <a href="https://viola.city/" target="_blank" rel="noopener">viola he</a> 设计并制作。ta 因为 QQ
           空间和博客大巴才第一次接触到网页编程。</p>
@@ -72,7 +64,7 @@
         <ul>
           <li>本站字体：<a href="https://github.com/SolidZORO/zpix-pixel-font" target="_blank" rel="noopener">Zpix 最像素</a>，<a
               href="https://github.com/lxgw/LxgwZhenKai" target="_blank" rel="noopener">霞鹜臻楷</a></li>
-          <li>本站素材：画出这 5,863 件像素画、大多不曾留名的腾讯设计师们。如果这里有你的作品，欢迎和我联系！</li>
+          <li>本站素材：画出这 5,851 件像素画、大多不曾留名的腾讯设计师们。如果这里有你的作品，欢迎和我联系！</li>
           <li>感谢 claude code 的协助</li>
         </ul>
         <h2>声明</h2>
@@ -80,11 +72,9 @@
           CDN，版权归腾讯控股有限公司所有。如需删除下架，请联系 viola@nyu.edu。</p>
         <p class="about-go"><a class="go" href="index.html">← 浏览藏品</a><a class="go" href="site/">装扮你的空间 →</a></p>
       </div>
-      <!-- /ABOUT:zh -->
-      <!-- ABOUT:en -->
       <div class="en">
         <h2>About</h2>
-        <p class="lead">This is a digital archive of QZone (QQ空间) decorations, collecting 5,863 files from between 2005
+        <p class="lead">This is a digital archive of QZone (QQ空间) decorations, collecting 5,851 files from between 2005
           and 2009, including skins, pendants, floaties, cursors, title bars and flash music players.</p>
         <p>QZone is the personal-homepage platform Tencent launched in 2005. At its peak it had over 600 million monthly
           active users, making it the largest social network in China at the time. For a generation it was the first
@@ -131,7 +121,7 @@
           <li>Typefaces: <a href="https://github.com/SolidZORO/zpix-pixel-font" target="_blank" rel="noopener">Zpix</a>,
             <a href="https://github.com/lxgw/LxgwZhenKai" target="_blank" rel="noopener">LXGW ZhenKai</a>
           </li>
-          <li>Artwork: the mostly unnamed Tencent designers who drew these 5,863 pixel pieces. If your work is here, I'd
+          <li>Artwork: the mostly unnamed Tencent designers who drew these 5,851 pixel pieces. If your work is here, I'd
             love to hear from you!</li>
           <li>Grateful for the assistance of claude code</li>
         </ul>
@@ -143,7 +133,6 @@
         <p class="about-go"><a class="go" href="index.html">← Browse the archive</a><a class="go" href="site/">Dress up
             a space →</a></p>
       </div>
-      <!-- /ABOUT:en -->
     </div>
   </main>
 
@@ -155,7 +144,8 @@
         en: { brand: 'QZone Museum', archive: 'Archive', qzone: 'QZone', about: 'About', lang: '中' }
       };
       function apply() {
-        document.body.className = 'lang-' + lang;
+        document.body.classList.remove('lang-zh', 'lang-en');
+        document.body.classList.add('lang-' + lang);
         document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
         var n = NAV[lang];
         document.getElementById('brand-link').textContent = n.brand;
@@ -172,6 +162,7 @@
       apply();
     })();
   </script>
+  <script src="cursor.js"></script>
 </body>
 
 </html>

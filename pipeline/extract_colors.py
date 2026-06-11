@@ -71,16 +71,21 @@ def analyze(path: Path, force_anim=False):
     # Lower the saturation bar so pastels/light-but-colorful items count as a
     # real hue instead of falling into "white". white/gray/black is a LAST resort
     # (only when an item has essentially no chromatic pixels).
+    # NO upper value cap on the chroma test: fully-bright saturated pixels
+    # (v=1.0 — most pixel art) are colors, not white highlights.
     chroma = defaultdict(list)   # hue_name -> [(r,g,b), ...]
     neutral = []                 # value of low-sat opaque pixels
+    whites = 0                   # near-white matte (low sat, high value)
     for r, g, b, a in px:
         if a < 160:
             continue
         hh, ss, vv = colorsys.rgb_to_hsv(r / 255, g / 255, b / 255)
-        if ss >= 0.14 and 0.12 <= vv <= 0.98:
+        if ss >= 0.14 and vv >= 0.12:
             chroma[hue_name(hh * 360)].append((r, g, b))
         else:
             neutral.append(vv)
+            if vv > 0.86:
+                whites += 1
 
     total_op = sum(len(v) for v in chroma.values()) + len(neutral)
     if total_op == 0:
@@ -88,8 +93,15 @@ def analyze(path: Path, force_anim=False):
                 "animated": animated, "w": w, "h": h}
 
     chroma_count = sum(len(v) for v in chroma.values())
+    # many sprite GIFs sit on a BAKED-IN WHITE canvas (no transparency); judge
+    # chromatic presence against the non-white content too, so a colorful motif
+    # on a big white matte wins over the matte
+    content = total_op - whites
+    chromatic_enough = chroma and (
+        chroma_count >= 0.06 * total_op
+        or (content >= 0.015 * total_op and chroma_count >= 0.30 * content))
     hues, color = [], ""
-    if chroma_count >= 0.06 * total_op and chroma:
+    if chromatic_enough:
         # every hue bin holding >=18% of the chromatic pixels is a "present" color
         ranked = sorted(chroma.items(), key=lambda kv: len(kv[1]), reverse=True)
         for name, pts in ranked:
@@ -153,6 +165,10 @@ def main():
     for p in (LIB / "titlebar").iterdir():
         if p.suffix.lower() in (".gif", ".png", ".jpg"):
             add("titlebar", p.stem, p, force_anim=(p.suffix.lower() == ".gif"))
+
+    # player: the ruffle-rendered gallery PNG (the SWF itself isn't an image)
+    for p in Path("web/site/assets/player_gallery").glob("*.png"):
+        add("player", p.stem, p)
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(out, ensure_ascii=False))

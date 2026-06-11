@@ -257,16 +257,16 @@ body::before {
   }
 }
 
-/* type tabs + search share the first filter row (search right) */
 .toolrow {
   display: flex;
   gap: 14px;
-  align-items: center;
+  align-items: flex-end;
   flex-wrap: wrap;
 }
 
 .toolrow .types {
-  flex: 1 1 auto;
+  flex: 1 1 0;
+  min-width: 0;
   margin-bottom: 0;
   order: -1;
   /* keep type tabs on the left of the row (search/toggle come first in DOM) */
@@ -463,11 +463,11 @@ body::before {
   cursor: pointer;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, .8);
-  background: linear-gradient(180deg, rgba(255, 255, 255, .72), rgba(220, 236, 252, .5));
+  background: linear-gradient(180deg, rgba(255, 255, 255, .78), rgba(220, 236, 252, .58));
   box-shadow: inset 0 1px 0 #fff, 0 3px 10px rgba(22, 80, 140, .14);
-  backdrop-filter: blur(3px);
   overflow: hidden;
   transition: transform .14s, box-shadow .16s, border-color .16s;
+  content-visibility: auto;
 }
 
 .cell::before {
@@ -569,11 +569,10 @@ body::before {
   z-index: 1;
   font: 400 8.5px/1 var(--mono);
   letter-spacing: 0;
-  background: rgba(8, 40, 80, .55);
+  background: rgba(8, 40, 80, .62);
   color: #fff;
   border-radius: 5px;
   padding: 2px 4px;
-  backdrop-filter: blur(2px);
 }
 
 .empty {
@@ -952,7 +951,157 @@ body::before {
   margin-top: 6px;
 }
 
+::-webkit-scrollbar {
+  width: 13px;
+  height: 13px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(228, 240, 253, .55);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .55), inset 0 0 6px rgba(60, 120, 175, .28);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 7px;
+  border: 2px solid rgba(255, 255, 255, .9);
+  box-shadow: inset 0 0 2px rgba(255, 255, 255, .85);
+  min-height: 36px;
+  min-width: 36px;
+}
+
+::-webkit-scrollbar-thumb:vertical {
+  background: linear-gradient(90deg, rgba(255, 255, 255, .95) 0%, rgba(186, 215, 250, .95) 46%, rgba(150, 195, 247, .95) 54%, rgba(120, 172, 240, .95) 100%);
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .95) 0%, rgba(186, 215, 250, .95) 46%, rgba(150, 195, 247, .95) 54%, rgba(120, 172, 240, .95) 100%);
+}
+
+::-webkit-scrollbar-thumb:vertical:hover,
+::-webkit-scrollbar-thumb:vertical:active {
+  background: linear-gradient(90deg, rgba(255, 255, 255, .85) 0%, rgba(110, 175, 250, .95) 46%, rgba(45, 130, 235, .97) 54%, rgba(16, 90, 205, 1) 100%);
+}
+
+::-webkit-scrollbar-thumb:horizontal:hover,
+::-webkit-scrollbar-thumb:horizontal:active {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .85) 0%, rgba(110, 175, 250, .95) 46%, rgba(45, 130, 235, .97) 54%, rgba(16, 90, 205, 1) 100%);
+}
+
+::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:active {
+  border-color: #fff;
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Firefox fallback — must stay scoped: scrollbar-color disables ::-webkit-scrollbar in Chromium */
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-color: #8ab2ef rgba(228, 240, 253, .7);
+  }
+}
+
+/* ---------- museum page: frosted deck stays put; only the collection scrolls ---------- */
+body.museum {
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+body.museum .topbar {
+  flex: 0 0 auto;
+}
+
+.scrollzone {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  transform: translateZ(0);
+  will-change: scroll-position;
+}
+
+
+
+body.museum-cursor,
+body.museum-cursor * {
+  cursor: url("assets/blank.png") 0 0, none !important;
+}
+
+#museumCursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  display: none;
+  pointer-events: none;
+  z-index: 99999;
+  image-rendering: pixelated;
+  will-change: transform;
+}
+
 /* ---------- responsive ---------- */
+@media (max-width: 1240px) and (min-width: 641px) {
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 18px;
+  }
+
+  .toolrow .search input {
+    width: clamp(140px, 26vw, 300px);
+  }
+
+  .toolrow,
+  .facet-row {
+    display: contents;
+  }
+
+  .toolrow .types {
+    order: 1;
+    flex: 1 1 100%;
+  }
+
+  .facet-row .hues {
+    order: 2;
+  }
+
+  .toolrow .search {
+    order: 3;
+    margin-left: auto;
+  }
+
+  .facet-row .years {
+    order: 4;
+  }
+
+  .facet-row .sort {
+    order: 5;
+  }
+
+  .active-bar {
+    order: 6;
+    flex: 1 1 100%;
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 760px) and (min-width: 641px) {
+  .hues .lbl {
+    display: none;
+  }
+}
+
 @media (max-width: 640px) {
   .detail {
     padding: 12px;
@@ -1025,6 +1174,7 @@ body::before {
   /* row 1: search + Filters toggle; type tabs become a horizontal scroll strip */
   .toolrow {
     gap: 8px;
+    align-items: center;
   }
 
   .toolrow .search {
