@@ -11,7 +11,7 @@ These item types are SELF-CONTAINED files (no Flash deps) — exactly what we wa
     pendant (type 2) -> orig/<b>/<id>.gif      (often animated GIF)
     floaty  (type 5) -> orig/<b>/<id>_2.gif
 
-Saved to library/<type>/<id>.<ext> with a provenance manifest. Resumable.
+Saved to web/library/<type>/<id>.<ext> with a provenance manifest. Resumable.
 
 Usage:
     uv run python recover_items.py cursor
@@ -151,7 +151,7 @@ def main():
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("type", choices=list(TYPES))
     ap.add_argument("--catalogs", default="data/catalogs")
-    ap.add_argument("--out", default="library")
+    ap.add_argument("--out", default="web/library")
     ap.add_argument("--limit", type=int)
     ap.add_argument("--workers", type=int, default=6)
     args = ap.parse_args()

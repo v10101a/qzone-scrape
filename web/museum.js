@@ -10,7 +10,7 @@ const I18N = {
     search: '按名称或编号搜索…', all: '全部', color: '色', byDate: '按年代', shuffle: '乱序',
     animOnly: '仅动图', empty: '没有匹配的藏品', langBtn: 'EN', filters: '筛选',
     f_type: '类型', f_color: '色系', f_year: '年代', f_search: '搜索',
-    d_era: '年代', d_color: '色系', d_size: '尺寸', d_price: '原价', d_animated: '动画',
+    d_era: '年代', d_date: '日期', d_color: '色系', d_size: '尺寸', d_price: '原价', d_animated: '动画',
     d_tags: '标签', d_yes: '是', price: p => `${p} <img class="hz" src="assets/huangzuan_plain.png" alt="黄钻">`, viewSrc: '查看原始素材 ↗',
     copyId: '复制编号', copied: '已复制 ✓', untitled: '（无名）',
     nav_archive: '藏品', nav_qzone: 'QQ空间', nav_about: '关于'
@@ -20,7 +20,7 @@ const I18N = {
     search: 'Search by name or ID…', all: 'All', color: 'Color', byDate: 'By date', shuffle: 'Shuffle',
     animOnly: 'Animated', empty: 'No items match these filters', langBtn: '中', filters: 'Filters',
     f_type: 'Type', f_color: 'Color', f_year: 'Year', f_search: 'Search',
-    d_era: 'Era', d_color: 'Color', d_size: 'Size', d_price: 'Price', d_animated: 'Animated',
+    d_era: 'Era', d_date: 'Date', d_color: 'Color', d_size: 'Size', d_price: 'Price', d_animated: 'Animated',
     d_tags: 'Tags', d_yes: 'Yes', price: p => `${p} <img class="hz" src="assets/huangzuan_plain.png" alt="Yellow Diamond">`, viewSrc: 'View original ↗',
     copyId: 'Copy ID', copied: 'Copied ✓', untitled: '(untitled)',
     nav_archive: 'Archive', nav_qzone: 'QZone', nav_about: 'About'
@@ -38,6 +38,11 @@ const TYPE_LABEL = { // [zh, en]
 const TYPE_ORDER = ['skin', 'pendant', 'floaty', 'cursor', 'titlebar', 'player', 'swf'];
 const PIXEL_TYPES = new Set(['pendant', 'floaty', 'cursor']); // upscale crisp
 const tType = t => (TYPE_LABEL[t] || [t, t])[lang === 'zh' ? 0 : 1];
+const TYPE_TAG_EN = {
+  skin: 'Skin', pendant: 'Pendant', floaty: 'Floaty', cursor: 'Cursor',
+  titlebar: 'Title bar', player: 'Music player', swf: 'Flash',
+};
+const tTypeTag = t => lang === 'zh' ? (TYPE_LABEL[t] || [t])[0] : (TYPE_TAG_EN[t] || tType(t));
 
 const HUE = { // bucket -> [swatch, 中文, EN]
   red: ['#d6453d', '红', 'Red'], orange: ['#e08b0f', '橙', 'Orange'], yellow: ['#e6c12f', '黄', 'Yellow'],
@@ -73,7 +78,7 @@ const tTag = t => lang === 'en' ? (TAG_EN[t] || t) : t;
 const state = { type: 'all', hue: null, year: null, q: '', sort: 'date', animOnly: false };
 let filtered = [], shown = 0, curItem = null;
 const BATCH = 140;
-const thumbURL = r => r.thumb ? '../' + r.thumb : '';
+const thumbURL = r => r.thumb || '';
 
 const countBy = key => { const m = {}; for (const r of META) { const v = r[key]; if (v) m[v] = (m[v] || 0) + 1; } return m; };
 const typeCounts = countBy('type'), yearCounts = countBy('era');
@@ -198,8 +203,8 @@ function openDetail(r) {
   document.getElementById('d-img').alt = r.name || r.id;
   document.getElementById('d-img').className = PIXEL_TYPES.has(r.type) ? 'pixel' : '';
   document.getElementById('d-name').textContent = r.name || L().untitled;
-  document.getElementById('d-sub').textContent =
-    `#${r.id} · ${tType(r.type)}` + (r.date ? ` · ${r.date.slice(0, 10)}` : '');
+  document.getElementById('d-meta').innerHTML =
+    `<span class="d-id">#${r.id}</span><span class="pill pill-type">${tTypeTag(r.type)}</span>`;
   const dl = document.getElementById('d-dl'); dl.innerHTML = '';
   // recessed glass field-card: label on top, value in an inset box
   const row = (k, v, wide) => {
@@ -208,14 +213,16 @@ function openDetail(r) {
     f.innerHTML = `<span class="fl">${k}</span><span class="fv">${v}</span>`;
     dl.appendChild(f);
   };
-  row(L().d_era, r.era);
+  if (r.date) row(L().d_date, r.date.slice(0, 10));
+  else if (r.era) row(L().d_era, r.era);
   if (r.w) row(L().d_size, `${r.w}×${r.h}`);
   if (r.price) row(L().d_price, L().price(r.price));
   if (r.animated) row(L().d_animated, L().d_yes);
   if (r.hues && r.hues.length) row(L().d_color, `<span class="huelist">` + r.hues.map(h =>
     `<span class="huechip"><span class="dot" style="background:${HUE[h] ? HUE[h][0] : r.color}"></span>${tHue(h)}</span>`
   ).join('') + `</span>`, true);
-  const tags = [...new Set([].concat(r.themes || [], r.mood || [], r.tone || [], r.audience || [], r.cats || []))].filter(Boolean);
+  const tags = [...new Set([].concat(r.themes || [], r.mood || [], r.tone || [], r.audience || [], r.cats || []))]
+    .filter(t => t && !t.startsWith('所有')); // drop the source site's "所有…" type buckets — type shows by the name
   if (tags.length) row(L().d_tags, `<div class="pills">${tags.map(t => `<span class="pill">${tTag(t)}</span>`).join('')}</div>`, true);
   const src = document.getElementById('d-src'); src.href = r.src || '#'; src.textContent = L().viewSrc;
   const copy = document.getElementById('d-copy'); copy.textContent = L().copyId;

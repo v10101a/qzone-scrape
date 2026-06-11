@@ -55,9 +55,22 @@ QZONE = [
 ]
 
 # --- QQShow (QQ秀) dress-up ----------------------------------------------
+# The per-item ARTWORK (the layered avatar GIFs) lives on its OWN host,
+# qqshow-item.qq.com, NOT under imgcache. URL shape (verified 2026-06 via CDX):
+#   qqshow-item.qq.com/<id>/<layer>/<frame>/[cache.gif]
+#   - <id>    : item id (often zero-padded to 8 digits, e.g. 00013419)
+#   - <layer> : body slot / z-order (00 = the catalog thumbnail; 2,7,8,9,11,
+#               13,14,18,23,24… = the placed artwork's slot in the older scheme)
+#   - <frame> : pose/frame, almost always 00
+# ~4,300 image URLs / ~3,600 distinct items are archived (≈2005-2007). The live
+# host 404s old ids, so these recover via Wayback id_. The look CATALOG (which
+# items combine into an avatar + their z-order) is the live excellib JS — see
+# qqshow/pipeline/catalog.py.
 QQSHOW = [
+    Target("qqshow-item", "qqshow-item.qq.com", "domain",
+           "QQShow per-item artwork: <id>/<layer>/00/[cache.gif] layered GIFs"),
     Target("qqshow-engine", "imgcache.qq.com/ac/qqshow", "prefix",
-           "QQShow dress-up engine (enginer_v_*.swf) + avatar assets"),
+           "QQShow dress-up engine (enginer_v_*.swf) + client assets"),
     Target("qqshow-club", "imgcache.qq.com/ac/club", "prefix",
            "QQ club / vip tool widgets"),
 ]

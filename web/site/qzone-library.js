@@ -29,8 +29,14 @@ const T = {
     profile: '个人资料', visitors: '最近访客', diary: '最新日志', album: '相册',
     writeDiary: '写日记', upload: '上传照片', albumEmpty: '相册还空着～',
     navHome: '主页', navLog: '日志', navAlbum: '相册', navMusic: '音乐', navBoard: '留言板', navProfile: '个人档',
-    qqshowLabel: '我的 QQ 秀', qqshowPh: '粘贴 qqshow2000.com 链接或 id…', searchPh: '按编号或 id 搜索…',
+    qqshowLabel: '我的 QQ 秀', qqshowPh: '粘贴 qqshow2000.com 链接或 id…', searchPh: '按编号搜索…',
     create: '去 qqshow2000 创建 → ', nick: '我',
+    shareCopied: '链接已复制 ✓ 发给朋友吧', shareReady: '链接已生成',
+    viewingShared: '正在浏览分享的空间', remix: '我也要装扮 →', albumSoon: '相册功能敬请期待～',
+    musicPh: '粘贴音乐链接…', musicEg: '▶ 试听示例', musicDel: '删除歌曲', musicSet: '设置音乐链接',
+    mLoading: '加载中…', mPlaying: '✓ 已加载，播放中', mDeleted: '已删除歌曲',
+    mNoEmbed: '！此视频禁止嵌入，换一个', mSite: '这个网站做不了后台音乐，试试 YouTube 或 .mp3',
+    mNeedLink: '需 YouTube 链接或 .mp3 / .m4a 直链', mCantPlay: '！放不了，换个音频直链', mTapPlay: '♪ 点击播放器或页面播放',
     space: n => `${n}的空间`, title: n => `${n}的 QQ 空间`,
     tabs: { skin: '皮肤', color: '配色', titlebar: '标题', pendant: '挂件', floaty: '漂浮', cursor: '鼠标', player: '音乐' }
   },
@@ -38,10 +44,16 @@ const T = {
     brand: 'QZone Museum', navArchive: 'Archive', navQzone: 'QZone', navAbout: 'About', langBtn: '中',
     market: 'Decorate', random: 'Random', clear: 'Clear', preview: 'Preview', edit: 'Edit', share: 'Share',
     profile: 'Profile', visitors: 'Recent Visitors', diary: 'Latest Diary', album: 'Album',
-    writeDiary: 'Write »', upload: 'Upload »', albumEmpty: 'No photos yet～',
+    writeDiary: 'Write', upload: 'Upload', albumEmpty: 'No photos yet～',
     navHome: 'Home', navLog: 'Diary', navAlbum: 'Album', navMusic: 'Music', navBoard: 'Board', navProfile: 'Profile',
-    qqshowLabel: 'My QQ Show', qqshowPh: 'Paste a qqshow2000.com link or id…', searchPh: 'Search by # or id…',
+    qqshowLabel: 'My QQ Show', qqshowPh: 'Paste a qqshow2000.com link or id…', searchPh: 'Search by item #…',
     create: 'Create one on qqshow2000 → ', nick: 'Me',
+    shareCopied: 'Link copied ✓ send it to a friend', shareReady: 'Link ready — see the address bar',
+    viewingShared: 'Viewing a shared QZone', remix: 'Remix →', albumSoon: 'Album coming soon～',
+    musicPh: 'Paste a music link (.mp3 / YouTube)…', musicEg: '▶ try a sample', musicDel: 'remove song', musicSet: 'Set music link',
+    mLoading: 'Loading…', mPlaying: '✓ Playing', mDeleted: 'Song removed',
+    mNoEmbed: '! Embedding is disabled for this video, try another', mSite: "That site can't play in the background, try YouTube or a direct .mp3 link",
+    mNeedLink: 'Needs a YouTube link or a direct .mp3 link', mCantPlay: "⚠ Can't play that, try a direct audio link", mTapPlay: '♪ Click player to start',
     space: n => `${n}'s Space`, title: n => `${n}'s QZone`,
     tabs: { skin: 'Skin', color: 'Color', titlebar: 'Banner', pendant: 'Pendant', floaty: 'Floaty', cursor: 'Cursor', player: 'Music' }
   },
@@ -172,9 +184,11 @@ $('#search').oninput = render;
 function render() {
   const items = L[tab] || [], q = $('#search').value.trim();
   const allIds = items.map(idOf);
-  const num = new Map(allIds.map((id, i) => [id, i + 1]));   // stable 1-based catalog number
+  const num = new Map(allIds.map((id, i) => [id, i + 1]));
   let ids = allIds;
-  if (q) ids = ids.filter(id => id.includes(q) || String(num.get(id)).includes(q));  // by number OR id
+  if (q) ids = ids.filter(id => tab === 'color'
+    ? String(num.get(id)).includes(q) || id.includes(q)
+    : id.includes(q));
 
   ids = ids.slice().sort((a, b) => (isSelected(tab, b) ? 1 : 0) - (isSelected(tab, a) ? 1 : 0));
   const shown = ids;
@@ -187,7 +201,7 @@ function render() {
 
   const none = tab === 'pendant' ? '' : `<div class="cell cell-none" data-none="1" data-id="" title="无（关闭）"></div>`;
   $('#grid').innerHTML = none + shown.map(id => {
-    const n = num.get(id);                    // displayed index
+    const n = tab === 'color' ? num.get(id) : id;   // displayed label (= archive item id)
     if (tab === 'color') {
       const c = items.find(x => idOf(x) === id);
 
@@ -344,11 +358,11 @@ function addPlayer(id) {
 
   const title = document.createElement('div'); title.className = 'mp-title'; title.innerHTML = '<span></span>';
   const ph = document.createElement('div'); ph.className = 'ph';
-  ph.innerHTML = `<button class="mbtn" data-music title="设置音乐链接">♫</button><button class="del" data-x>✕</button>`;
+  ph.innerHTML = `<button class="mbtn" data-music title="${TT().musicSet}">♫</button><button class="del" data-x>✕</button>`;
 
-  // music-link popover
+  // music-link popover (data-i18n attrs keep it in sync when the language toggles)
   const pop = document.createElement('div'); pop.className = 'music-pop';
-  pop.innerHTML = `<div class="mp-row"><input class="mp-in" placeholder="link to music"><button class="mp-go">OK</button></div><span class="mp-st"></span><div class="mp-foot"><a class="mp-eg" href="#">▶ test</a><button class="mp-del" title="delete">✕</button></div>`;
+  pop.innerHTML = `<div class="mp-row"><input class="mp-in" data-i18n-ph="musicPh" placeholder="${TT().musicPh}"><button class="mp-go">OK</button></div><span class="mp-st"></span><div class="mp-foot"><a class="mp-eg" data-i18n="musicEg" href="#">${TT().musicEg}</a><button class="mp-del" title="${TT().musicDel}">✕</button></div>`;
   d.appendChild(host); d.appendChild(surface); d.appendChild(title); d.appendChild(ph); d.appendChild(pop); $('#pageDeco').appendChild(d);
   const pl = window.RufflePlayer.newest().createPlayer(); pl.style.width = w + 'px'; pl.style.height = h + 'px'; host.appendChild(pl);
   pl.load({
@@ -364,13 +378,13 @@ function addPlayer(id) {
   // show 加载中… → on confirmed playback, flash ✓ then auto-close (clear feedback, no guessing)
   const setSong = () => {
     if (!popIn.value.trim()) return;
-    musicStatus(popSt, '加载中…');
+    musicStatus(popSt, TT().mLoading);
     setMusic(popIn.value, popSt, () => setTimeout(() => pop.classList.remove('open'), 900));
   };
   popGo.onclick = setSong;
   popIn.addEventListener('keydown', e => { if (e.key === 'Enter') setSong(); });
   pop.querySelector('.mp-eg').onclick = e => { e.preventDefault(); popIn.value = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3'; setSong(); };
-  pop.querySelector('.mp-del').onclick = () => { stopMusic(); popIn.value = ''; popIn.focus(); musicStatus(popSt, '已删除歌曲'); };
+  pop.querySelector('.mp-del').onclick = () => { stopMusic(); popIn.value = ''; popIn.focus(); musicStatus(popSt, TT().mDeleted); };
   ph.querySelector('[data-music]').onclick = e => { e.stopPropagation(); pop.classList.contains('open') ? pop.classList.remove('open') : openPop(); };
   // click the gadget (a non-drag tap): if a song is loaded → play/pause; else open the link popover
   surface.addEventListener('click', () => {
@@ -517,8 +531,8 @@ function playYouTube(videoId, st, onOk) {
       videoId, playerVars: { autoplay: 1, loop: 1, playlist: videoId, controls: 0 },
       events: {
         onReady: e => { e.target.playVideo(); updatePlayerState(); },
-        onStateChange: e => { updatePlayerState(); if (e.data === 1 && !done) { done = true; musicStatus(st, '✓ 已加载，播放中'); onOk && onOk(); } },
-        onError: () => musicStatus(st, '⚠ 此视频禁止嵌入，换一个')
+        onStateChange: e => { updatePlayerState(); if (e.data === 1 && !done) { done = true; musicStatus(st, TT().mPlaying); onOk && onOk(); } },
+        onError: () => musicStatus(st, TT().mNoEmbed)
       }
     });
   };
@@ -560,7 +574,7 @@ function setMusic(raw, st, onOk) {
   stopMusic();
   const info = parseMusic(raw); if (!info) { musicStatus(st, ''); return; }
   if (info.type === 'site' || info.type === 'unknown') {
-    musicStatus(st, info.type === 'site' ? '这个网站做不了后台音乐，试试 YouTube 或 .mp3 直链' : '需 YouTube 链接或 .mp3 / .m4a 直链');
+    musicStatus(st, info.type === 'site' ? TT().mSite : TT().mNeedLink);
     return;
   }
   musicURL = info.url; musicMode = info.type;
@@ -568,10 +582,10 @@ function setMusic(raw, st, onOk) {
   const a = document.createElement('audio'); a.id = 'bgMusic'; a.src = info.url; a.loop = true; a.style.display = 'none';
   a.addEventListener('play', updatePlayerState); a.addEventListener('pause', updatePlayerState);
   // 'playing' fires when it actually starts → the definitive "loaded ✓" signal
-  a.addEventListener('playing', () => { musicStatus(st, '✓ 已加载，播放中'); onOk && onOk(); }, { once: true });
+  a.addEventListener('playing', () => { musicStatus(st, TT().mPlaying); onOk && onOk(); }, { once: true });
   document.body.appendChild(a);
-  a.onerror = () => musicStatus(st, '⚠ 放不了，换个音频直链');
-  a.play().catch(() => { musicStatus(st, '♪ 点击播放器或页面播放'); armPlayOnGesture(); });
+  a.onerror = () => musicStatus(st, TT().mCantPlay);
+  a.play().catch(() => { musicStatus(st, TT().mTapPlay); armPlayOnGesture(); });
 }
 
 // ── random 日志 generator 
@@ -629,8 +643,7 @@ function dedupeSentences(paras) {
     s = s.trim(); if (!s || seen.has(s)) return false; seen.add(s); return true;
   }).join('')).filter(Boolean);
 }
-// 日志 = TWO random full posts (markov prose) — fills the wide column. Each = title (40% 《》)
-// + paragraphs. Generated under a SEED so the share link reproduces the exact posts.
+// 日志 = TWO random posts (markov prose)
 function genRizhi(nPara, baseLen) {
   const S = window.SHUOSHUO; if (!S || !S.lines || !S.lines.length) return null;
   let t = S.clauses[ri(S.clauses.length)]; if (RND() < 0.4) t = '《' + t + '》';
@@ -640,7 +653,7 @@ function genRizhi(nPara, baseLen) {
 }
 function genRizhiNew(seed) {
   rzSeed = (seed == null) ? newSeed() : (seed >>> 0);
-  withSeed(rzSeed, () => { rizhiList = [genRizhi(3 + ri(2), 115), genRizhi(2, 85)].filter(Boolean); });
+  withSeed(rzSeed, () => { rizhiList = [genRizhi(2 + ri(2), 100), genRizhi(2, 80)].filter(Boolean); });
   renderRizhi();
 }
 function renderRizhi() {
@@ -651,7 +664,7 @@ function renderRizhi() {
     + `<div class="rizhi-meta">查看全文» 阅读(${rz.rd}) 评论(${rz.c}) 转载 分享<span class="rizhi-date">${esc(rz.d)}</span></div></div>`).join('');
 }
 $('#rizhiNew') && ($('#rizhiNew').onclick = () => genRizhiNew());
-$('#albumUpload') && ($('#albumUpload').onclick = () => toast('相册功能敬请期待～'));
+$('#albumUpload') && ($('#albumUpload').onclick = () => toast(TT().albumSoon));
 
 // ── 最近访客 (visitor records) — recovered classic QQ pixel avatars + 非主流 网名 ──
 // Avatars = window.AVATARS (Tencent ISUX pixel-retro classic system-avatar set, recovered
@@ -743,14 +756,14 @@ $('#shareBtn').onclick = async () => {
   const code = await encodeState(buildShareState());
   history.replaceState(null, '', '#s=' + code);   // reflect in the address bar
   const url = location.href;
-  try { await navigator.clipboard.writeText(url); toast('链接已复制 ✓ 发给朋友吧'); }
-  catch (e) { toast('链接已生成（见地址栏）'); }
+  try { await navigator.clipboard.writeText(url); toast(TT().shareCopied); }
+  catch (e) { toast(TT().shareReady); }
 };
 // viewing someone else's shared space → a banner to remix it into your own
 function showForkBanner() {
   if ($('#forkBanner')) return;
   const b = document.createElement('div'); b.id = 'forkBanner';
-  b.innerHTML = `<span>正在浏览分享的空间</span><button id="forkBtn">改成我的 →</button>`;
+  b.innerHTML = `<span data-i18n="viewingShared">${TT().viewingShared}</span><button id="forkBtn" data-i18n="remix">${TT().remix}</button>`;
   document.body.appendChild(b);
   $('#forkBtn').onclick = () => setEditMode(true);   // setEditMode handles banner + hash cleanup
 }
@@ -770,11 +783,24 @@ function fitPage() {
   // zoom the 1280 page to fit the WINDOW WELL (#stageWrap), not the whole viewport
   const host = $('#stageWrap');
   const avail = (host ? host.clientWidth : document.documentElement.clientWidth);
-  pageZoom = Math.min(1, avail / 1280);   // match .browser width
-  const br = $('.browser'); if (br) br.style.zoom = pageZoom;
+  const fit = Math.min(1, avail / 1280);
+  // phones: fitting 1280 into ~390 leaves the page unreadable (zoom ~.3). Floor the
+  // zoom at "fill the well's height" and let the page PAN horizontally inside
+  // #stageWrap (overflow:auto) — like viewing a desktop site on a phone.
+  const availH = host ? Math.max(280, window.innerHeight - host.getBoundingClientRect().top - 10) : 900;
+  const z = Math.max(fit, Math.min(0.62, availH / 900));
+  if (Math.abs(z - pageZoom) > 0.015) {   // ignore tiny jitter (mobile URL-bar show/hide)
+    pageZoom = z;
+    const br = $('.browser'); if (br) br.style.zoom = z;
+  }
 }
 window.addEventListener('resize', fitPage);
 fitPage();
+// when the page pans (zoom floored on a phone), start centered on the 980 content area
+(function centerPan() {
+  const host = $('#stageWrap'); if (!host) return;
+  if (host.scrollWidth > host.clientWidth) host.scrollLeft = (host.scrollWidth - host.clientWidth) / 2;
+})();
 
 // ── language toggle (EN ⇄ 中), shared with /museum/ via localStorage('lang') ──
 $('#lang') && ($('#lang').onclick = () => {

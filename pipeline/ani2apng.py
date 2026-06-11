@@ -7,10 +7,10 @@ transparent APNG that the gallery shows as a mouse-following element.
 
 Parses the ANI: 'anih' (frame/step counts + default jiffy rate), the 'icon'
 frames, optional 'rate' (per-step durations) and 'seq ' (step→frame order), and
-the first frame's hotspot. Writes library/cursor_anim/<id>.png + a hotspots json.
+the first frame's hotspot. Writes web/library/cursor_anim/<id>.png + a hotspots json.
 
 Usage:
-    uv run python ani2apng.py            # convert all library/cursor/*.ani
+    uv run python ani2apng.py            # convert all web/library/cursor/*.ani
     uv run python ani2apng.py --limit 20
 """
 
@@ -155,8 +155,8 @@ def _pad(im, w, h):
 def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--src", default="library/cursor")
-    ap.add_argument("--out", default="library/cursor_anim")
+    ap.add_argument("--src", default="web/library/cursor")
+    ap.add_argument("--out", default="web/library/cursor_anim")
     ap.add_argument("--limit", type=int)
     args = ap.parse_args()
 

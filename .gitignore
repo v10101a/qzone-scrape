@@ -10,6 +10,7 @@ ruffle-harness/ruffle/
 data/assets/
 data/*.jsonl
 archive/
+qqshow/
 
 # FFDec jar
 tools/ffdec*/

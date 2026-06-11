@@ -27,7 +27,7 @@ from PIL import Image, ImageFile
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-LIB = Path("library")
+LIB = Path("web/library")
 OUT = Path("data/catalogs/colors.json")
 
 # (type, dir, how to find the representative file for an id)

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Bake museum/about.{zh,en}.md into museum/about.html.
+"""Bake web/about.{zh,en}.md into web/about.html.
 
 The about page is bilingual; editing interlaced zh/en HTML was painful, so the
 prose lives in two plain-markdown files and this script renders them into the
-marked regions of museum/about.html:
+marked regions of web/about.html:
 
     <!-- ABOUT:zh --> ... <!-- /ABOUT:zh -->
     <!-- ABOUT:en --> ... <!-- /ABOUT:en -->
@@ -25,7 +25,7 @@ Run from anywhere:  python3 pipeline/build_about.py
 import re
 from pathlib import Path
 
-MUSEUM = Path(__file__).resolve().parent.parent / "museum"
+MUSEUM = Path(__file__).resolve().parent.parent / "web"
 
 
 def esc(s):

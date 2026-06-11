@@ -690,18 +690,32 @@ body::before {
 }
 
 .detail-meta h2 {
-  margin: 0 0 3px;
+  margin: 0 0 8px;
   font: 400 24px/1.25 var(--disp);
   letter-spacing: var(--px);
   color: var(--ink);
   text-shadow: 0 1px 0 rgba(255, 255, 255, .7);
 }
 
-.d-sub {
+/* item number + type, sitting together under the name */
+.d-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
   margin: 0 0 18px;
-  font: 400 12px/1.5 var(--mono);
+}
+
+.d-id {
+  font: 400 13px/1 var(--mono);
   letter-spacing: 0;
   color: var(--muted);
+  white-space: nowrap;
+}
+
+/* desktop: name stacked over its #id/type line (default block flow) */
+.d-head {
+  margin: 0;
 }
 
 /* recessed glass field-cards (BannerDepot DNA, glassified) */
@@ -786,6 +800,15 @@ body::before {
   border-radius: 8px;
   padding: 4px 10px;
   box-shadow: inset 0 1px 0 #fff, 0 1px 2px var(--shadow);
+}
+
+/* the item's type — a light pill, pixel-faced to set it apart from tags */
+.pill-type {
+  font-family: var(--disp);
+  letter-spacing: var(--px);
+  color: var(--aqua-deep);
+  background: rgba(173, 205, 250, .4);
+  border-color: rgba(255, 255, 255, .85);
 }
 
 .hz {
@@ -953,6 +976,26 @@ body::before {
     padding: 20px 22px;
     border-left: none;
     border-top: 1px solid rgba(255, 255, 255, .55);
+  }
+
+  /* name on the left, #id + type tucked into the top-right corner (saves a line) */
+  .d-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .d-head h2 {
+    margin: 0;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .d-head .d-meta {
+    margin: 0;
+    flex: 0 0 auto;
+    justify-content: flex-end;
   }
 
   /* tighter header so the grid gets the screen */

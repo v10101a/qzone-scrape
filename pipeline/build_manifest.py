@@ -29,13 +29,13 @@ from pathlib import Path
 COLORS = Path("data/catalogs/colors.json")
 META = Path("data/catalogs/catalog_meta.jsonl")
 CATNAMES = Path("data/catalogs/cat_names.json")
-LIB = Path("library")
+LIB = Path("web/library")
 
 OUT_JSON = Path("data/catalog.json")
-OUT_JS = Path("museum/catalog.js")        # baked window.META for the museum (file://-safe)
-PLAYER_THUMBS = Path("site/assets/player_gallery")
+OUT_JS = Path("web/catalog.js")           # baked window.META for the museum (file://-safe)
+PLAYER_THUMBS = Path("web/site/assets/player_gallery")
 SWF_THUMBS = Path("data/screenshots")
-SITE_INDEX = Path("site/library_index.js")  # atelier's already-curated good-skin allowlist
+SITE_INDEX = Path("web/site/library_index.js")  # atelier's already-curated good-skin allowlist
 
 
 def good_skins():
@@ -85,7 +85,7 @@ def src_url(typ, iid, ext):
 
 
 def thumb_path(typ, iid):
-    """Relative-to-repo-root path of a browser-displayable thumbnail, or ''."""
+    """Web-root-relative URL of a browser-displayable thumbnail, or ''. Files live under web/."""
     if typ == "skin":
         for ext in ("jpg", "gif", "png"):
             if (LIB / "skin" / f"{iid}_top.{ext}").exists():

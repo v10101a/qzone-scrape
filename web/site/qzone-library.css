@@ -380,11 +380,15 @@ body.custom-cursor #stageWrap * {
   min-width: 0;
 }
 
-/* module boxes fill their column; header colored by the 配色 scheme */
+/* module boxes fill their column, colored by the 配色 scheme. The surface color is the
+   scheme's tabActive (the "content" color — dark schemes have dark surfaces + light text),
+   kept semi-transparent so the skin's full-screen _top art shows through (the real-era
+   模块透明度 effect; skins were splashes designed to peek around content). */
 .mod-profile {
   width: 100%;
-  margin-bottom: 14px;
-  background: rgba(255, 255, 255, .92);
+  margin-bottom: 12px;
+  background: rgba(255, 255, 255, .72);
+  background: color-mix(in srgb, var(--c-tabactive, #fff) 72%, transparent);
   border: 1px solid var(--c-tabborder, #c7e5eb);
   /* v5: flat 1px border, square corners */
   overflow: hidden;
@@ -392,18 +396,19 @@ body.custom-cursor #stageWrap * {
 }
 
 .mod-profile .hd {
-  height: 37px;
-  line-height: 37px;
-  padding: 0 14px;
+  height: 31px;
+  line-height: 31px;
+  padding: 0 12px;
   font-weight: 700;
   color: var(--c-hdtext, #fff);
-  /* module title follows the 配色 scheme */
+  /* module title follows the 配色 scheme; slightly more opaque than the body */
   background: var(--c-hd, #7fa9c9);
+  background: color-mix(in srgb, var(--c-hd, #7fa9c9) 85%, transparent);
   text-shadow: 1px 1px 0 rgba(0, 0, 0, .3);
 }
 
 .mod-profile .bd {
-  min-height: 54px;
+  min-height: 48px;
 }
 
 .mod-profile .bottom {
@@ -412,7 +417,7 @@ body.custom-cursor #stageWrap * {
 
 .hd-gen {
   float: right;
-  margin-top: 7px;
+  margin-top: 4px;
   cursor: pointer;
   border: 1px solid rgba(255, 255, 255, .6);
   background: rgba(255, 255, 255, .25);
@@ -507,16 +512,18 @@ body.view-only .hd-gen {
   font-size: 13px;
   line-height: 1.9;
   color: #9aa6b0;
+  color: color-mix(in srgb, var(--c-text, #667786) 62%, var(--c-tabactive, #fff));
 }
 
 /* generated 日志 — title · paragraph body · 阅读/评论/转载/分享 + date. Two posts share
    the box; the second is divided off with a top border. */
 .rizhi {
-  padding: 10px 14px 12px;
+  padding: 8px 12px 10px;
 }
 
 .rizhi+.rizhi {
   border-top: 1px solid #e6ebf0;
+  border-top-color: color-mix(in srgb, var(--c-tabborder, #c7e5eb) 55%, transparent);
 }
 
 /* 最近访客 — vertical list of recovered classic QQ pixel avatars + 非主流 网名 + 来访时间.
@@ -524,8 +531,8 @@ body.view-only .hd-gen {
 .visitors {
   display: flex;
   flex-direction: column;
-  gap: 9px;
-  padding: 11px 12px;
+  gap: 8px;
+  padding: 9px 11px;
 }
 
 .visitor {
@@ -536,8 +543,8 @@ body.view-only .hd-gen {
 }
 
 .visitor-av {
-  width: 54px;
-  height: 54px;
+  width: 46px;
+  height: 46px;
   flex: none;
   border: 1px solid var(--c-tabborder, #c7e5eb);
   background: #fff;
@@ -562,33 +569,37 @@ body.view-only .hd-gen {
 .visitor-t {
   font-size: 11px;
   color: #9aa6b0;
+  color: color-mix(in srgb, var(--c-text, #667786) 62%, var(--c-tabactive, #fff));
   margin-top: 2px;
 }
 
+
 .rizhi-title {
   font-family: var(--font-kai);
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  color: #2a5a8a;
-  margin-bottom: 7px;
+  color: var(--c-link, #2a5a8a);
+  margin: 10px 0px 6px 0px;
 }
 
 .rizhi-p {
   font-family: var(--font-kai);
   /* warm 楷 for the written content (the 日志 prose) */
   font-size: 14px;
-  color: #444;
-  line-height: 1.95;
+  color: var(--c-text, #444);
+  line-height: 1.8;
   text-indent: 2em;
-  margin: 0 0 6px;
+  margin: 0 0 5px;
 }
 
 .rizhi-meta {
-  margin-top: 8px;
+  margin-top: 6px;
   padding-top: 6px;
   border-top: 1px dashed #e2e2e2;
-  font-size: 13px;
+  border-top-color: color-mix(in srgb, var(--c-tabborder, #c7e5eb) 55%, transparent);
+  font-size: 12px;
   color: #9aa6b0;
+  color: color-mix(in srgb, var(--c-text, #667786) 62%, var(--c-tabactive, #fff));
 }
 
 .rizhi-date {
@@ -623,8 +634,9 @@ body.view-only .hd-gen {
   gap: 6px;
   margin: 6px auto 10px;
   padding: 4px 6px 4px 10px;
-  background: #fff;
-  border: 1px solid #c3ccd8;
+  /* nick box rides the scheme's content surface */
+  background: var(--c-tabactive, #fff);
+  border: 1px solid var(--c-tabborder, #c3ccd8);
   border-radius: 6px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, .08);
 }
@@ -634,7 +646,7 @@ body.view-only .hd-gen {
   font-family: var(--font-pixel);
   font-size: 14px;
   font-weight: 700;
-  color: #2a4d63;
+  color: var(--c-text, #2a4d63);
   min-width: 100px;
   max-width: 150px;
   outline: none;
@@ -796,6 +808,8 @@ body.view-only #clearBtn {
   position: absolute;
   cursor: grab;
   user-select: none;
+  touch-action: none;
+  /* touch-drag the deco, don't scroll the page */
   filter: drop-shadow(0 3px 6px rgba(0, 0, 0, .25));
 }
 
@@ -903,6 +917,7 @@ body.view-only .drag-surface {
 }
 
 /* music-link popover — opens when you click the player gadget (it IS the bg-music player) */
+/* frosted aero glass popover — same family as the toolbar/market chrome */
 .music-pop {
   position: absolute;
   bottom: 100%;
@@ -911,14 +926,17 @@ body.view-only .drag-surface {
   /* clear the ✕ row above the gadget */
   display: none;
   flex-direction: column;
-  gap: 4px;
-  width: 280px;
-  padding: 7px;
-  background: rgba(20, 28, 38, .92);
-  border-radius: 6px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, .4);
+  gap: 6px;
+  width: 290px;
+  padding: 10px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .82), rgba(212, 231, 252, .68));
+  backdrop-filter: blur(14px) saturate(1.45);
+  -webkit-backdrop-filter: blur(14px) saturate(1.45);
+  border: 1px solid var(--aero-edge);
+  border-radius: 12px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .85), 0 10px 26px rgba(18, 70, 135, .3);
   z-index: 6;
-  font-family: "Noto Sans SC", sans-serif;
+  font-family: var(--font-pixel);
 }
 
 .music-pop.open {
@@ -927,37 +945,56 @@ body.view-only .drag-surface {
 
 .music-pop .mp-row {
   display: flex;
-  gap: 4px;
+  gap: 6px;
 }
 
 .music-pop .mp-in {
   flex: 1;
   min-width: 0;
-  border: 1px solid #5b6776;
-  border-radius: 4px;
-  padding: 5px 7px;
+  border: 1px solid var(--aero-edge);
+  border-radius: 8px;
+  padding: 6px 10px;
   font-size: 12px;
-  background: #fff;
-  color: #222;
+  background: rgba(255, 255, 255, .6);
+  box-shadow: inset 0 2px 5px rgba(60, 120, 175, .22), inset 0 1px 0 rgba(255, 255, 255, .7);
+  color: var(--aero-ink);
   outline: none;
+  transition: box-shadow .15s, background .15s;
+}
+
+.music-pop .mp-in::placeholder {
+  color: #88a6c8;
+}
+
+.music-pop .mp-in:focus {
+  background: rgba(255, 255, 255, .9);
+  box-shadow: inset 0 2px 5px rgba(60, 120, 175, .15), 0 0 0 3px rgba(60, 140, 240, .3);
 }
 
 .music-pop .mp-go {
   flex: none;
-  border: 0;
   cursor: pointer;
-  background: #1559cf;
-  color: #fff;
-  border-radius: 4px;
+  border: 1px solid var(--aero-edge);
+  border-radius: 8px;
+  background: var(--gel);
+  box-shadow: var(--gel-sh);
+  color: var(--aero-deep);
   padding: 0 12px;
   font-size: 12px;
   font-weight: 700;
+  font-family: var(--font-pixel);
+  transition: transform .12s, box-shadow .15s;
+}
+
+.music-pop .mp-go:hover {
+  transform: translateY(-1px);
+  box-shadow: inset 0 1px 0 #fff, 0 4px 12px var(--aero-shadow), 0 0 0 2px rgba(110, 175, 250, .34);
 }
 
 .music-pop .mp-st {
-  font-size: 10px;
-  color: #b9c6d6;
-  min-height: 12px;
+  font-size: 11px;
+  color: var(--aero-deep);
+  min-height: 13px;
 }
 
 .music-pop .mp-foot {
@@ -967,8 +1004,8 @@ body.view-only .drag-surface {
 }
 
 .music-pop .mp-eg {
-  font-size: 10px;
-  color: #7fb0ff;
+  font-size: 11px;
+  color: var(--aero-deep);
   text-decoration: none;
 }
 
@@ -980,13 +1017,13 @@ body.view-only .drag-surface {
   border: 0;
   background: none;
   cursor: pointer;
-  color: #ff9a9a;
-  font-size: 10px;
+  color: #b3422e;
+  font-size: 11px;
   padding: 0;
 }
 
 .music-pop .mp-del:hover {
-  color: #ff5a5a;
+  color: #d62b0e;
   text-decoration: underline;
 }
 
@@ -1046,12 +1083,20 @@ body.view-only .music-pop {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8), inset 0 -2px 6px rgba(110, 160, 225, .14);
 }
 
+/* label row: 我的 QQ 秀 on the left, the 去 qqshow2000 创建 link on its right */
+.qqshow-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
 .qqshow-edit label {
   display: block;
   font-size: 12px;
   font-weight: 700;
   color: var(--aero-ink);
-  margin-bottom: 6px;
 }
 
 .qqshow-edit .row {
@@ -1116,11 +1161,10 @@ body.view-only .music-pop {
 }
 
 .qqshow-edit .qqshow-make {
-  display: inline-block;
-  margin-top: 7px;
   font-size: 11px;
   color: var(--aero-deep);
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .qqshow-edit .qqshow-make:hover {
@@ -1367,9 +1411,49 @@ body.view-only .music-pop {
   color: #1559cf;
 }
 
-/* ── mobile: the editing chrome goes responsive (the QZone page itself just scales
-   via JS zoom). The market becomes a full-screen sheet so it's usable on a phone. ── */
+/* touch devices: no hover, no real cursor — the follower-cursor illusion can't work
+   (it would just stick where you last tapped), so keep the native behavior. */
+@media (hover: none) {
+  #followCursor {
+    display: none !important;
+  }
+
+  body.custom-cursor #stageWrap,
+  body.custom-cursor #stageWrap * {
+    cursor: auto !important;
+  }
+}
+
+/* ── mobile: the editing chrome goes compact; the QZone page keeps a READABLE zoom
+   (fitPage floors it at fill-height) and PANS horizontally inside the well instead
+   of shrinking the whole 1280 to fit. The market becomes a full-width sheet. ── */
 @media (max-width: 640px) {
+  .topbar .gradient {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .brand h1 {
+    font-size: 17px;
+  }
+
+  .brand h1::before {
+    width: 18px;
+    height: 18px;
+    margin-right: 6px;
+    vertical-align: -3px;
+  }
+
+  .topnav {
+    gap: 4px;
+  }
+
+  .topnav a,
+  .topnav button {
+    font-size: 12px;
+    padding: 7px 10px;
+  }
+
   .market {
     position: fixed;
     inset: 0;
@@ -1388,8 +1472,20 @@ body.view-only .music-pop {
     padding: 8px;
   }
 
+  /* the bar wraps to two rows (breadcrumb + tools) — let it grow past its fixed 48px */
   .viewer-bar {
+    height: auto;
+    min-height: 44px;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
+    padding: 6px 10px;
+  }
+
+  .viewer-tools {
+    flex-wrap: wrap;
+  }
+
+  .viewer-tools button {
+    padding: 6px 9px;
   }
 }

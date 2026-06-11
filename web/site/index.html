@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QQ空间</title>
+  <title>QZone 2000</title>
   <link rel="icon" type="image/png" href="favicon.png" />
   <link
     href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&family=Noto+Sans+SC:wght@400;500;700&display=swap"
@@ -16,16 +16,16 @@
 </head>
 
 <body>
-  <!-- shared museum header (same as /museum/) — makes QZone feel like part of the site -->
+  <!-- shared museum header (same as the museum at /) — makes QZone feel like part of the site -->
   <header class="topbar">
     <div class="gradient">
       <div class="brand">
-        <h1 data-i18n="brand">QQ空间装扮博物馆</h1>
+        <h1 data-i18n="brand">QQ空间博物馆</h1>
       </div>
       <nav class="topnav">
-        <a href="../museum/index.html" data-i18n="navArchive">藏品</a>
+        <a href="../" data-i18n="navArchive">藏品</a>
         <a class="on" aria-current="page" data-i18n="navQzone">QQ空间</a>
-        <a href="../museum/about.html" data-i18n="navAbout">关于</a>
+        <a href="../about.html" data-i18n="navAbout">关于</a>
         <button id="lang">EN</button>
       </nav>
     </div>
@@ -114,17 +114,19 @@
       <div class="market" id="market">
         <h1 data-i18n="market">装扮空间</h1>
         <div class="qqshow-edit">
-          <label for="qqshowInput" data-i18n="qqshowLabel">我的 QQ 秀</label>
+          <div class="qqshow-head">
+            <label for="qqshowInput" data-i18n="qqshowLabel">我的 QQ 秀</label>
+            <a class="qqshow-make" href="https://qqshow2000.com/" target="_blank" rel="noopener" data-i18n="create">去
+              qqshow2000 创建 → </a>
+          </div>
           <div class="row">
             <input id="qqshowInput" data-i18n-ph="qqshowPh" placeholder="粘贴 qqshow2000.com 链接或 id…" />
             <button id="qqshowRandom" title="随机">🎲</button>
             <button id="qqshowApply">✓</button>
           </div>
-          <a class="qqshow-make" href="https://qqshow2000.com/" target="_blank" rel="noopener" data-i18n="create">去
-            qqshow2000 创建 → </a>
         </div>
         <div class="tabs" id="tabs"></div>
-        <div class="search"><input id="search" data-i18n-ph="searchPh" placeholder="按编号或 id 搜索…" /></div>
+        <div class="search"><input id="search" data-i18n-ph="searchPh" placeholder="按编号搜索…" /></div>
         <div class="count" id="count"></div>
         <div class="grid" id="grid"></div>
         <div class="foot" id="foot"></div>
