@@ -11,7 +11,7 @@ const I18N = {
     animOnly: '仅动图', empty: '没有匹配的藏品', langBtn: 'EN', filters: '筛选',
     f_type: '类型', f_color: '色系', f_year: '年代', f_search: '搜索',
     d_era: '年代', d_date: '日期', d_color: '色系', d_size: '尺寸', d_price: '原价', d_animated: '动画',
-    d_tags: '标签', d_yes: '是', price: p => `${p} <img class="hz" src="assets/huangzuan_plain.png" alt="黄钻">`, viewSrc: '查看原始素材 ↗',
+    d_tags: '标签', d_yes: '是', price: p => `${p} <img class="hz" src="assets/huangzuan_plain.png" alt="黄钻">`, viewSrc: '查看原始素材 ↗', download: '下载素材 ↓', dlFail: '下载失败',
     copyId: '复制编号', copied: '已复制 ✓', untitled: '（无名）',
     nav_archive: '藏品', nav_qzone: 'QQ空间', nav_about: '关于'
   },
@@ -21,7 +21,7 @@ const I18N = {
     animOnly: 'Animated', empty: 'No items match these filters', langBtn: '中', filters: 'Filters',
     f_type: 'Type', f_color: 'Color', f_year: 'Year', f_search: 'Search',
     d_era: 'Era', d_date: 'Date', d_color: 'Color', d_size: 'Size', d_price: 'Price', d_animated: 'Animated',
-    d_tags: 'Tags', d_yes: 'Yes', price: p => `${p} <img class="hz" src="assets/huangzuan_plain.png" alt="Yellow Diamond">`, viewSrc: 'View original ↗',
+    d_tags: 'Tags', d_yes: 'Yes', price: p => `${p} <img class="hz" src="assets/huangzuan_plain.png" alt="Yellow Diamond">`, viewSrc: 'View original ↗', download: 'Download ↓', dlFail: 'Download failed',
     copyId: 'Copy ID', copied: 'Copied ✓', untitled: '(untitled)',
     nav_archive: 'Archive', nav_qzone: 'QZone', nav_about: 'About'
   },
@@ -145,6 +145,9 @@ function applyFilters() {
 }
 
 const grid = document.getElementById('grid');
+const scrollzone = document.getElementById('scrollzone');
+const sentinel = document.getElementById('sentinel');
+const FILL_MARGIN = 700;   // look-ahead: keep this many px below the fold filled
 function cellHTML(r) {
   const c = document.createElement('div');
   c.className = 'cell ' + (PIXEL_TYPES.has(r.type) ? 'cell-pixel' : 'cell-photo');
@@ -165,6 +168,19 @@ function renderBatch() {
   for (let i = shown; i < end; i++) frag.appendChild(cellHTML(filtered[i]));
   grid.appendChild(frag); shown = end;
 }
+// fill tall viewports (e.g. 4K) where a single batch can't reach the bottom. The
+// IntersectionObserver only fires on a *change*, so if the sentinel stays in view after
+// one batch it would never re-trigger and the page looks stuck. Keep rendering until the
+// sentinel is pushed below the well (plus look-ahead) or every item is shown.
+function sentinelInView() {
+  if (shown >= filtered.length) return false;
+  const z = scrollzone.getBoundingClientRect(), s = sentinel.getBoundingClientRect();
+  return s.top <= z.bottom + FILL_MARGIN;
+}
+function fillViewport() {
+  let guard = 0;
+  while (sentinelInView() && guard++ < 120) renderBatch();
+}
 function refresh() {
   rndSeed = (rndSeed * 16807) % 2147483647;
   const tchips = document.querySelectorAll('#f-type .chip');
@@ -176,7 +192,7 @@ function refresh() {
   const ft = document.getElementById('filterToggle');
   if (ft) ft.classList.toggle('on', !!(state.hue || state.year || state.animOnly || state.sort === 'rnd'));
 
-  filtered = applyFilters(); grid.innerHTML = ''; shown = 0; renderBatch();
+  filtered = applyFilters(); grid.innerHTML = ''; shown = 0; fillViewport();
   setTxt('sub', L().sub(filtered.length.toLocaleString()));
   const emptyEl = document.getElementById('empty');
   if (emptyEl) { emptyEl.textContent = L().empty; emptyEl.hidden = filtered.length > 0; }
@@ -193,6 +209,41 @@ function buildActiveBar() {
   if (state.year) add(`${L().f_year} <b>${state.year}</b>`, () => { state.year = null; refresh(); });
   if (state.animOnly) add(`<b>${L().animOnly}</b>`, () => { state.animOnly = false; document.getElementById('animOnly').checked = false; refresh(); });
   if (state.q) add(`${L().f_search} <b>${state.q}</b>`, () => { state.q = ''; document.getElementById('q').value = ''; refresh(); });
+}
+
+// ---- download --------------------------------------------------------------
+// The catalog's `src` points at Tencent's CDN (qzonestyle.gtimg.cn), which is dead for
+// ~1/3 of items (all skins + floaties 404) and serves non-viewable binaries for the
+// rest. So we offer the locally-archived original instead — always present, no linkrot.
+// First candidate is the best local original; r.thumb is the guaranteed fallback.
+function dlTargets(r) {
+  switch (r.type) {
+    case 'pendant': return [`library/pendant/${r.id}.gif`, r.thumb];
+    case 'floaty': return [`library/floaty/${r.id}_1.gif`, r.thumb];
+    case 'cursor': return [`library/cursor/${r.id}.ani`, r.thumb];   // original Windows cursor
+    case 'player': return [`library/player/${r.id}.swf`, r.thumb];   // original Flash player
+    default: return [r.thumb];   // skin/titlebar: the archived thumb IS the full-res original
+  }
+}
+function dlName(r, url) {
+  const ext = url ? (url.split(/[?#]/)[0].split('.').pop() || 'bin') : 'bin';
+  const safe = String(r.name || r.type || 'item').replace(/[\\/:*?"<>|\s]+/g, '_').slice(0, 40);
+  return `${r.id}_${safe}.${ext}`;
+}
+async function downloadItem(r, btn) {
+  const label = L().download;
+  for (const url of dlTargets(r).filter(Boolean)) {
+    try {
+      const resp = await fetch(url); if (!resp.ok) continue;
+      const blob = await resp.blob(), obj = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = obj; a.download = dlName(r, url);
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(obj), 5000);
+      return true;
+    } catch (e) { /* fall through to next candidate */ }
+  }
+  if (btn) { btn.textContent = L().dlFail; setTimeout(() => { btn.textContent = label; }, 1500); }
+  return false;
 }
 
 // ---- detail ---------------------------------------------------------------
@@ -224,7 +275,12 @@ function openDetail(r) {
   const tags = [...new Set([].concat(r.themes || [], r.mood || [], r.tone || [], r.audience || [], r.cats || []))]
     .filter(t => t && !t.startsWith('所有')); // drop the source site's "所有…" type buckets — type shows by the name
   if (tags.length) row(L().d_tags, `<div class="pills">${tags.map(t => `<span class="pill">${tTag(t)}</span>`).join('')}</div>`, true);
-  const src = document.getElementById('d-src'); src.href = r.src || '#'; src.textContent = L().viewSrc;
+  // download the locally-archived original (Tencent's `src` is mostly dead — see dlTargets)
+  const src = document.getElementById('d-src');
+  src.textContent = L().download;
+  const t0 = dlTargets(r).filter(Boolean)[0] || '#';
+  src.href = t0; src.download = dlName(r, t0);   // native right-click "save as" / no-JS fallback
+  src.onclick = e => { e.preventDefault(); downloadItem(r, src); };
   const copy = document.getElementById('d-copy'); copy.textContent = L().copyId;
   copy.onclick = () => {
     navigator.clipboard?.writeText(String(r.id)); copy.textContent = L().copied;
@@ -282,8 +338,11 @@ if (filterToggle) filterToggle.onclick = () => {
 document.getElementById('f-type').addEventListener('scroll', updateTypeFade, { passive: true });
 window.addEventListener('resize', updateTypeFade);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(updateTypeFade);
-new IntersectionObserver(es => { if (es[0].isIntersecting && shown < filtered.length) renderBatch(); },
-  { root: document.getElementById('scrollzone'), rootMargin: '700px' }).observe(document.getElementById('sentinel'));
+new IntersectionObserver(es => { if (es[0].isIntersecting) fillViewport(); },
+  { root: scrollzone, rootMargin: FILL_MARGIN + 'px' }).observe(sentinel);
+// growing the window (e.g. dragging onto a 4K display) may expose empty space below the
+// last batch — top up so there's always content to scroll into.
+window.addEventListener('resize', fillViewport);
 
 applyLang();
 if (location.hash.startsWith('#item-')) {

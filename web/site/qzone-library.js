@@ -798,7 +798,20 @@ function fitPage() {
   if (Math.abs(z - pageZoom) > 0.015) {   // ignore tiny jitter (mobile URL-bar show/hide)
     pageZoom = z;
     const br = $('.browser'); if (br) br.style.zoom = z;
+    fitQQShow(z);
   }
+}
+
+// the QQ秀 iframe must keep a constant 390×844 inner viewport no matter the page
+// zoom: WebKit (iOS Safari) multiplies a child document's layout viewport by the
+// ancestors' effective zoom, Chrome doesn't. Counter-zoom the frame to 1/z so both
+// engines agree, and fold the page zoom into the crop transform instead (transforms
+// never reach the inner layout). Keep in sync with the .qqshow-frame CSS defaults.
+const QQSHOW_CROP = { scale: .94, x: -83, y: -236 };
+function fitQQShow(z) {
+  const f = $('.qqshow-frame'); if (!f) return;
+  f.style.zoom = 1 / z;
+  f.style.transform = `scale(${(QQSHOW_CROP.scale * z).toFixed(4)}) translate(${QQSHOW_CROP.x}px, ${QQSHOW_CROP.y}px)`;
 }
 window.addEventListener('resize', fitPage);
 fitPage();

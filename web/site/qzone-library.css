@@ -609,8 +609,9 @@ body.view-only .hd-gen {
 }
 
 /* embedded QQ秀 (qqshow2000.com) — a portrait avatar card in the 个人资料 module.
-   The iframe is over-sized + shifted up so the qqshow site's own header/footer is
-   clipped, leaving just the avatar + scene. The whole card links to the full view. */
+   The iframe gets a phone-sized 390×844 viewport (qqshow2000's nicest layout: the
+   avatar card centered under its header), scaled + shifted so only the avatar card
+   fills our window. The whole card links to the full view (desktop only). */
 .qqshow-card {
   position: relative;
   display: block;
@@ -739,14 +740,20 @@ body:not(.view-only) .qqshow-name[contenteditable="true"] {
   cursor: text;
 }
 
+/* WebKit multiplies a child document's layout viewport by the page zoom (Chrome
+   doesn't) — fitQQShow() counter-zooms the frame to 1/pageZoom so qqshow2000 always
+   lays out at 390×844, and carries the page zoom in the transform's scale instead
+   (transforms never reach the inner layout). Keep scale/translate in sync with
+   QQSHOW_CROP in qzone-library.js. */
 .qqshow-frame {
-  width: 250px;
-  height: 470px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 390px;
+  height: 844px;
   border: 0;
-  display: block;
-  margin-top: -50px;
-  margin-left: -20px;
-  /* clip the qqshow2000 top header bar */
+  transform-origin: 0 0;
+  transform: scale(.94) translate(-83px, -236px);
   pointer-events: none;
   /* clicks fall through to the card link */
 }
@@ -1424,6 +1431,12 @@ body.view-only .music-pop {
   body.custom-cursor #stageWrap * {
     cursor: auto !important;
   }
+
+  /* the whole QQ秀 card is a link to qqshow2000 — too easy to fat-finger while
+     panning on a phone, so taps fall through (the market still links there) */
+  .qqshow-card {
+    pointer-events: none;
+  }
 }
 
 /* ── mobile: the editing chrome goes compact; the QZone page keeps a READABLE zoom
@@ -1435,30 +1448,35 @@ body.view-only .music-pop {
     overflow-x: auto;
   }
 
+  /* squeeze brand + the 4 nav gels onto one row even with the wider EN labels */
   .topbar .gradient {
-    padding: 8px 12px;
-    gap: 8px;
+    padding: 8px 8px;
+    gap: 6px;
   }
 
   .brand h1 {
-    font-size: 17px;
+    font-size: 16px;
   }
 
   .brand h1::before {
-    width: 18px;
-    height: 18px;
-    margin-right: 6px;
+    width: 17px;
+    height: 17px;
+    margin-right: 5px;
     vertical-align: -3px;
   }
 
   .topnav {
-    gap: 4px;
+    gap: 3px;
   }
 
   .topnav a,
   .topnav button {
-    font-size: 12px;
-    padding: 7px 10px;
+    font-size: 11px;
+    padding: 6px 7px;
+  }
+
+  #lang {
+    min-width: 30px;
   }
 
   .market {

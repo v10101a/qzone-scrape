@@ -1147,24 +1147,36 @@ body.museum-cursor * {
     justify-content: flex-end;
   }
 
-  /* tighter header so the grid gets the screen */
+  /* tighter header so the grid gets the screen — brand + nav share ONE row
+     (nav hugs the top right, like the QZone page; keep in sync with
+     qzone-library.css's mobile topbar) */
   .topbar .gradient {
-    gap: 8px;
-    padding: 9px 14px 6px;
+    gap: 6px;
+    padding: 8px 8px 5px;
   }
 
   .brand h1 {
-    font-size: 18px;
+    font-size: 16px;
+  }
+
+  .brand h1::before {
+    width: 17px;
+    height: 15px;
+    margin-right: 5px;
   }
 
   .topnav {
-    gap: 5px;
+    gap: 3px;
   }
 
   .topnav a,
   .topnav button {
-    padding: 7px 11px;
-    font-size: 12.5px;
+    padding: 6px 7px;
+    font-size: 11px;
+  }
+
+  #lang {
+    min-width: 30px;
   }
 
   .filters {
