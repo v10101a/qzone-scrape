@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- everything resolves against /site/ so the site's scripts, styles and asset paths work unchanged -->
+  <base href="../site/" />
+  <title>decorate your page</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&family=Noto+Sans+SC:wght@400;500;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://fontsapi.zeoseven.com/2/main/result.css" />
+  <link rel="stylesheet" href="qzone-library.css" />
+  <link rel="stylesheet" href="../tiat/tiat.css" />
+  <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+</head>
+
+<body data-mode="idle">
+  <div class="wall" id="wall"></div>
+
+  <main class="viewer">
+    <div class="viewer-frame">
+      <div class="viewer-bar">
+        <div class="viewer-loc"><span class="viewer-dot"></span><span id="viewerLoc">我的空间</span></div>
+        <div class="viewer-tools" id="toolbar">
+          <button id="marketToggle" data-i18n="market">装扮空间</button>
+          <button id="randomBtn" data-i18n="random">随机</button>
+          <button id="clearBtn" data-i18n="clear">清空</button>
+          <button id="shareBtn" data-i18n="share">分享</button>
+          <button id="editBtn" class="primary">预览</button>
+        </div>
+      </div>
+      <div id="stageWrap">
+        <div id="skinBg"></div>
+        <div class="browser">
+          <div class="browser-body" id="browserBody">
+            <div class="space">
+              <div class="masthead">
+                <div class="page-header" id="pageHeader"></div>
+                <div class="who" id="pageTitle">我的 QQ 空间</div>
+                <div class="nav"><a class="on" data-i18n="navHome">主页</a><a data-i18n="navLog">日志</a><a
+                    data-i18n="navAlbum">相册</a><a data-i18n="navMusic">音乐</a><a data-i18n="navBoard">留言板</a><a
+                    data-i18n="navProfile">个人档</a></div>
+              </div>
+              <div class="columns">
+                <div class="col col-main">
+                  <section class="mod-profile mod-profile-headline">
+                    <div class="hd"><span data-i18n="profile">个人资料</span></div>
+                    <div class="bd">
+                      <a class="qqshow-card" id="qqshow" target="_blank" rel="noopener" title="我的 QQ 秀">
+                        <iframe class="qqshow-frame" scrolling="no" loading="lazy" title="我的 QQ 秀"></iframe>
+                      </a>
+                      <div class="name">
+                        <div class="qqshow-namerow">
+                          <div class="qqshow-name" id="profileName" data-ph="点此填写昵称" spellcheck="false">viola</div>
+                          <button class="qqshow-edit-btn" id="profileEditBtn" title="编辑昵称">✎</button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="bottom"></div>
+                  </section>
+                  <section class="mod-profile">
+                    <div class="hd"><span data-i18n="visitors">最近访客</span><button class="hd-gen" id="visitorGen"
+                        title="随机访客">🎲</button></div>
+                    <div class="bd">
+                      <div class="visitors" id="visitorList"></div>
+                    </div>
+                    <div class="bottom"></div>
+                  </section>
+                </div>
+                <div class="col col-menu">
+                  <section class="mod-profile">
+                    <div class="hd"><span data-i18n="diary">最新日志</span><a class="hd-action" id="rizhiNew" title="随机"
+                        data-i18n="writeDiary">写日记</a></div>
+                    <div class="bd" id="rizhiBody"></div>
+                    <div class="bottom"></div>
+                  </section>
+                </div>
+              </div>
+            </div>
+            <div id="stageDeco"></div>
+            <div id="pageDeco"></div>
+          </div>
+        </div>
+      </div><!-- /#stageWrap -->
+
+      <div class="market" id="market">
+        <h1 data-i18n="market">装扮空间</h1>
+        <div class="qqshow-edit">
+          <div class="qqshow-head">
+            <label for="qqshowInput" data-i18n="qqshowLabel">我的 QQ 秀</label>
+            <a class="qqshow-make" href="https://qqshow2000.com/" target="_blank" rel="noopener" data-i18n="create">去
+              qqshow2000 创建 → </a>
+          </div>
+          <div class="row">
+            <input id="qqshowInput" data-i18n-ph="qqshowPh" placeholder="粘贴 qqshow2000.com 链接或 id…" />
+            <button id="qqshowRandom" title="随机">🎲</button>
+            <button id="qqshowApply">✓</button>
+          </div>
+        </div>
+        <div class="tabs" id="tabs"></div>
+        <div class="search"><input id="search" data-i18n-ph="searchPh" placeholder="按编号搜索…" /></div>
+        <div class="count" id="count"></div>
+        <div class="grid" id="grid"></div>
+        <div class="foot" id="foot"></div>
+      </div>
+    </div><!-- /.viewer-frame -->
+  </main>
+
+  <div class="layer" id="attract">
+    <div class="attract-line">decorate a page</div>
+  </div>
+
+  <div class="layer" id="done">
+    <div class="done-bar">
+      <button id="again">redecorate</button>
+      <button id="postcardBtn">save your page</button>
+      <button class="primary" id="browse">browse the archive →</button>
+    </div>
+  </div>
+
+  <div class="layer" id="postcard">
+    <div class="pc-win">
+      <div class="pc-bar"><span class="viewer-dot"></span><span id="pc-title">viola's QZone</span><button
+          id="pc-close">Back</button></div>
+      <div class="pc-body" id="pc-body">
+        <div class="pc-deco" id="pc-deco"></div>
+        <canvas id="pc-qr"></canvas>
+        <span class="pc-site">qzone2000.com</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="layer" id="archive">
+    <button id="back">← start over</button>
+  </div>
+
+  <script src="library_index.js"></script>
+  <script src="shuoshuo_data.js"></script>
+  <script src="avatars_index.js"></script>
+  <script src="qzone-library.js"></script>
+  <script src="../catalog.js"></script>
+  <script src="../tiat/tiat.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,291 @@
+/* kiosk layer over qzone-library.css: the site's window + market, placed per mode */
+body {
+  user-select: none;
+}
+
+.viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  padding: 0;
+  display: block;
+  overflow: visible;
+}
+
+.viewer-frame {
+  position: absolute;
+  width: auto;
+  max-height: none;
+}
+
+#stageWrap {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  scrollbar-gutter: auto;
+}
+
+body.view-only .viewer-tools {
+  display: none;
+}
+
+.market {
+  width: 500px;
+}
+
+#clearBtn,
+#shareBtn,
+.deco .ph .mbtn,
+.music-pop {
+  display: none !important;
+}
+
+.wall {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  overflow: hidden;
+  transition: opacity .3s;
+}
+
+body:not([data-mode="idle"]) .wall {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.wall-col {
+  flex: 1;
+  min-width: 0;
+  will-change: transform;
+  animation: wall-up var(--dur, 90s) linear infinite;
+}
+
+.wall-col.rev {
+  animation-direction: reverse;
+}
+
+@keyframes wall-up {
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+.wcell {
+  margin-bottom: 12px;
+  position: relative;
+  aspect-ratio: 1/1;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, .8);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .78), rgba(220, 236, 252, .58));
+  box-shadow: inset 0 1px 0 #fff, 0 3px 10px rgba(22, 80, 140, .14);
+  overflow: hidden;
+}
+
+.wcell img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  padding: 6px;
+}
+
+.wcell.px img {
+  image-rendering: pixelated;
+  padding: 10px;
+}
+
+/* ---------- gel buttons (same recipe as .viewer-tools button) ---------- */
+.done-bar button,
+#back,
+#pc-close {
+  cursor: pointer;
+  font-family: var(--font-pixel);
+  color: var(--aero-deep);
+  border: 1px solid var(--aero-edge);
+  border-radius: 10px;
+  background: var(--gel);
+  box-shadow: var(--gel-sh);
+  padding: 12px 22px;
+  font-size: 16px;
+  transition: transform .12s, box-shadow .15s;
+}
+
+.done-bar button:hover,
+#back:hover,
+#pc-close:hover {
+  transform: translateY(-1px);
+  box-shadow: inset 0 1px 0 #fff, 0 4px 12px var(--aero-shadow), 0 0 0 2px rgba(110, 175, 250, .34);
+}
+
+.done-bar button.primary {
+  color: #fff;
+  border-color: rgba(255, 255, 255, .9);
+  background: var(--gel-on);
+  box-shadow: var(--gel-on-sh);
+  text-shadow: 0 1px 1px rgba(0, 40, 95, .4);
+}
+
+/* ---------- layers ---------- */
+.layer {
+  position: fixed;
+  inset: 0;
+  display: none;
+}
+
+body[data-mode="idle"] #attract {
+  display: block;
+  z-index: 10;
+}
+
+/* the start button: same blue gel as the active pills */
+.attract-line {
+  position: absolute;
+  left: 50%;
+  bottom: 12vh;
+  transform: translateX(-50%);
+  padding: 18px 40px;
+  border-radius: 14px;
+  white-space: nowrap;
+  cursor: pointer;
+  font-family: var(--font-pixel);
+  font-size: 28px;
+  color: #fff;
+  text-shadow: 0 1px 1px rgba(0, 40, 95, .4);
+  border: 1px solid rgba(255, 255, 255, .9);
+  background: var(--gel-on);
+  box-shadow: var(--gel-on-sh), 0 18px 44px rgba(12, 55, 110, .35);
+}
+
+body[data-mode="done"] #done {
+  display: block;
+  z-index: 90;
+  pointer-events: none;
+}
+
+.done-bar {
+  position: absolute;
+  left: 50%;
+  bottom: 4vh;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .66), rgba(208, 228, 252, .5));
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  border: 1px solid var(--aero-edge);
+  box-shadow: inset 0 1px 0 #fff, 0 18px 44px rgba(12, 55, 110, .35);
+  pointer-events: auto;
+}
+
+.done-bar button {
+  font-size: clamp(17px, 1.5vw, 22px);
+  padding: 14px 24px;
+}
+
+/* ---------- postcard: a little window with a QR code of the site's share link ---------- */
+body.postcard-open #postcard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 150;
+  background: rgba(16, 60, 115, .38);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* the card = the page's skin with the picked decorations floating on it, QR in the corner */
+.pc-win {
+  width: min(800px, 92vw);
+  border-radius: 16px;
+  border: 1px solid var(--aero-edge);
+  background: rgba(255, 255, 255, .26);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6), 0 18px 44px rgba(18, 70, 135, .28);
+  overflow: hidden;
+  font-family: var(--font-pixel);
+  color: var(--aero-ink);
+}
+
+.pc-bar {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px 0 18px;
+  font-size: 14px;
+  color: var(--aero-deep);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .62), rgba(206, 226, 250, .34));
+  border-bottom: 1px solid rgba(255, 255, 255, .6);
+}
+
+#pc-close {
+  margin-left: auto;
+  padding: 5px 13px;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+.pc-body {
+  position: relative;
+  aspect-ratio: 800 / 552;
+  overflow: hidden;
+  background: #dde6ec;
+}
+
+.pc-deco {
+  position: absolute;
+  inset: 0;
+}
+
+.pc-deco img {
+  position: absolute;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, .25));
+}
+
+#pc-qr {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  transform: translate(-50%, -50%);
+  padding: 8px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .3);
+}
+
+.pc-site {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 14px;
+  font-size: 26px;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, .55);
+}
+
+/* ---------- archive: the museum as is, in a frame ---------- */
+body[data-mode="archive"] #archive {
+  display: block;
+  z-index: 200;
+  background: #dde6ec;
+}
+
+#archive iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+#back {
+  position: absolute;
+  left: 18px;
+  bottom: 18px;
+  z-index: 2;
+}
