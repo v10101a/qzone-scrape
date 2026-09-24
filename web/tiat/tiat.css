@@ -29,6 +29,15 @@ body.view-only .viewer-tools {
   display: none;
 }
 
+body.custom-cursor,
+body.custom-cursor * {
+  cursor: url("../assets/blank.png") 0 0, none !important;
+}
+
+body[data-mode="archive"] #followCursor {
+  display: none !important;
+}
+
 .market {
   width: 500px;
 }
@@ -52,9 +61,9 @@ body.view-only .viewer-tools {
   transition: opacity .3s;
 }
 
+/* gone, not faded: 13 animating columns of GIFs under the market's backdrop blur made decorate flicker */
 body:not([data-mode="idle"]) .wall {
-  opacity: 0;
-  pointer-events: none;
+  display: none;
 }
 
 .wall-col {
@@ -139,6 +148,20 @@ body:not([data-mode="idle"]) .wall {
 body[data-mode="idle"] #attract {
   display: block;
   z-index: 10;
+  pointer-events: none;
+}
+
+/* in idle the mini browser is one big start button (covers the QQ秀 link too); inside
+   #stageWrap so the follower cursor still shows over it */
+body[data-mode="idle"] #stageWrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+}
+
+body[data-mode="idle"] .viewer-frame {
+  cursor: pointer;
 }
 
 /* the start button: same blue gel as the active pills */
@@ -151,6 +174,7 @@ body[data-mode="idle"] #attract {
   border-radius: 14px;
   white-space: nowrap;
   cursor: pointer;
+  pointer-events: auto;
   font-family: var(--font-pixel);
   font-size: 28px;
   color: #fff;
@@ -158,6 +182,16 @@ body[data-mode="idle"] #attract {
   border: 1px solid rgba(255, 255, 255, .9);
   background: var(--gel-on);
   box-shadow: var(--gel-on-sh), 0 18px 44px rgba(12, 55, 110, .35);
+  transition: transform .12s, box-shadow .15s;
+}
+
+.attract-line:hover {
+  transform: translate(-50%, -3px);
+  box-shadow: var(--gel-on-sh), 0 0 0 3px rgba(110, 175, 250, .45), 0 22px 48px rgba(12, 55, 110, .4);
+}
+
+.attract-line:active {
+  transform: translate(-50%, 0);
 }
 
 body[data-mode="done"] #done {
@@ -288,4 +322,6 @@ body[data-mode="archive"] #archive {
   left: 18px;
   bottom: 18px;
   z-index: 2;
+  background: linear-gradient(180deg, #ffffff 0%, #f3f8ff 48%, #dfebfb 52%, #c9dcf7 100%);
+  box-shadow: var(--gel-sh), 0 10px 26px rgba(18, 70, 135, .3);
 }

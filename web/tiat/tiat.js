@@ -21,7 +21,7 @@
 
   // English chrome everywhere, incl. the archive iframe (shares localStorage 'lang')
   try { localStorage.setItem('lang', 'en'); } catch (e) { }
-  T.en.preview = 'Done ✓';
+  T.en.preview = 'Done ✓'; T.en.space = n => `${n}'s QZone`;
   lang = 'en'; applyLang();
   setName(NAME, false);
 
@@ -80,8 +80,13 @@
     if (tickN % 16 === 15) { genRizhiNew(); genVisitors(); }
     tickN++;
   }
-  // idle only: the follower cursor drifts over the page until someone moves the mouse
-  document.addEventListener('pointermove', e => { if (e.pointerType === 'mouse') lastMouse = performance.now(); }, { capture: true, passive: true });
+  // the follower cursor shows everywhere on the kiosk (the site hides it outside #stageWrap;
+  // this runs after that handler). Also feeds the idle drift below.
+  document.addEventListener('pointermove', e => {
+    if (e.pointerType !== 'mouse') return;
+    lastMouse = performance.now();
+    const f = $('#followCursor'); if (f) f.style.display = 'block';
+  }, { capture: true, passive: true });
   const wd = { x: 0, y: 0, tx: 0, ty: 0 };
   function wander(now) {
     const f = $('#followCursor');
@@ -103,8 +108,8 @@
     setMarket(true);
   }
   function start() { clearInterval(attractT); decorate(); bump(); }
-  $('#attract').onclick = start;
-  document.addEventListener('keydown', () => { if (mode === 'idle') start(); });
+  $('.attract-line').onclick = start;   // only the button and the mini browser start (no keys: ⌘⇧ screenshots)
+  $('.viewer-frame').addEventListener('click', e => { if (mode === 'idle' && e.isTrusted) start(); });   // idle's own randomBtn.click() bubbles here too
   $('#editBtn').addEventListener('click', () => setMode(editMode ? 'decorate' : 'done'));   // after the site's toggle
   $('#again').onclick = decorate;
 
